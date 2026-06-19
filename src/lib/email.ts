@@ -1,4 +1,4 @@
-const ECOMAIL_API_URL = "https://api2.ecomail.cz/transaction-messages";
+const ECOMAIL_API_URL = "https://api2.ecomailapp.cz/transactional/send-message";
 const ECOMAIL_API_KEY = process.env.ECOMAIL_API_KEY!;
 const FROM_EMAIL = process.env.FROM_EMAIL || "noreply@domena.sk";
 const FROM_NAME = process.env.FROM_NAME || "Orange Fakturácia";
@@ -18,14 +18,12 @@ async function sendEmail(
     },
     body: JSON.stringify({
       message: {
-        html,
         subject,
-        from_email: FROM_EMAIL,
         from_name: FROM_NAME,
-      },
-      recipient: {
-        email: toEmail,
-        name: toName,
+        from_email: FROM_EMAIL,
+        html,
+        text: html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(),
+        to: [{ email: toEmail, name: toName }],
       },
     }),
   });
