@@ -46,6 +46,7 @@ Vyplň premenné v `.env.local`:
 | `FROM_NAME` | — | Zobrazované meno odosielateľa (predvolené: `Orange Fakturácia`) |
 | `REPLY_TO_EMAIL` | — | Adresa pre odpovede — užitočné ak `FROM_EMAIL` je no-reply adresa. Ak nie je nastavená, použije sa `FROM_EMAIL`. |
 | `APP_URL` | ✅ | Verejná URL aplikácie bez lomítka (napr. `https://orange.domena.sk`) |
+| `PUBLIC_ORG_NAME` | — | Názov organizácie zobrazený v UI a emailoch (predvolené: `Slovenský futbalový zväz`) |
 
 > **Ecomail a doména:** Transaktičné emaily vyžadujú overenú odosielaciu doménu. Overiť ju môžeš v Ecomail → Nastavenia → Odosielacie domény pridaním SPF/DKIM záznamov do DNS. Ak používaš subdoménu (napr. `mail.domena.sk`) ako `FROM_EMAIL`, nastav `REPLY_TO_EMAIL` na svoju skutočnú schránku.
 
