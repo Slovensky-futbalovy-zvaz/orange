@@ -3,9 +3,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Users, Upload, FileText, BarChart2,
-  Building2, Landmark, Signal, ChevronDown, Layers, BookOpen,
+  Building2, Landmark, Signal, Layers, BookOpen,
   LogOut, Shield, Github,
 } from "lucide-react";
+import { CustomSelect } from "@/components/CustomSelect";
 import { useCompany } from "@/contexts/CompanyContext";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -36,22 +37,14 @@ export default function Sidebar() {
           <div className="font-semibold text-sm text-gray-900 leading-tight">Orange Fakturácia</div>
         </div>
         {/* Company switcher */}
-        <div className="relative">
-          <select
-            value={selectedCn}
-            onChange={(e) => setSelectedCn(e.target.value)}
-            className="appearance-none w-full text-xs bg-gray-50 border border-gray-200 rounded-lg px-2.5 py-1.5 pr-7 text-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-300 cursor-pointer"
-          >
-            <option value="">Všetky spoločnosti</option>
-            {companies.map((c) => (
-              <option key={c.cn} value={c.cn}>{c.companyName}</option>
-            ))}
-          </select>
-          <ChevronDown
-            size={12}
-            className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-          />
-        </div>
+        <CustomSelect
+          value={selectedCn}
+          onChange={setSelectedCn}
+          options={[
+            { value: "", label: "Všetky spoločnosti" },
+            ...companies.map((c) => ({ value: c.cn, label: c.companyName })),
+          ]}
+        />
       </div>
 
       {/* Navigation */}

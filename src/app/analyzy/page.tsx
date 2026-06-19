@@ -5,7 +5,8 @@ import {
   LineChart, Line, CartesianGrid, Legend,
   PieChart, Pie, Cell,
 } from "recharts";
-import { Phone, Euro, AlertTriangle, TrendingUp, ChevronDown } from "lucide-react";
+import { Phone, Euro, AlertTriangle, TrendingUp } from "lucide-react";
+import { CustomSelect } from "@/components/CustomSelect";
 import { useCompany } from "@/contexts/CompanyContext";
 
 const MONTH_NAMES = [
@@ -89,28 +90,6 @@ function cnToTab(cn: string): TabKey {
   if (cn === "0252080007") return "sfz";
   if (cn === "0252219878") return "marketing";
   return "all";
-}
-
-function SelectField({
-  value, onChange, children, className = "",
-}: {
-  value: string;
-  onChange: (v: string) => void;
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <div className={`relative ${className}`}>
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full appearance-none bg-white border border-gray-200 rounded-lg px-3 py-2 pr-8 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 cursor-pointer"
-      >
-        {children}
-      </select>
-      <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-    </div>
-  );
 }
 
 export default function AnalyzyPage() {
@@ -215,23 +194,32 @@ export default function AnalyzyPage() {
         {/* Period filters */}
         {years.length > 0 && (
           <div className="flex items-center gap-2">
-            <SelectField value={year} onChange={setYear} className="w-28">
-              {years.map((y) => <option key={y} value={y}>{y}</option>)}
-            </SelectField>
+            <CustomSelect
+              value={year}
+              onChange={setYear}
+              className="w-28"
+              options={years.map((y) => ({ value: y, label: y }))}
+            />
             <span className="text-xs text-gray-400">od</span>
-            <SelectField value={monthFrom} onChange={handleMonthFrom} className="w-24">
-              {MONTH_NAMES.slice(1).map((name, i) => {
-                const val = (i + 1).toString().padStart(2, "0");
-                return <option key={val} value={val}>{name}</option>;
-              })}
-            </SelectField>
+            <CustomSelect
+              value={monthFrom}
+              onChange={handleMonthFrom}
+              className="w-24"
+              options={MONTH_NAMES.slice(1).map((name, i) => ({
+                value: (i + 1).toString().padStart(2, "0"),
+                label: name,
+              }))}
+            />
             <span className="text-xs text-gray-400">do</span>
-            <SelectField value={monthTo} onChange={handleMonthTo} className="w-24">
-              {MONTH_NAMES.slice(1).map((name, i) => {
-                const val = (i + 1).toString().padStart(2, "0");
-                return <option key={val} value={val}>{name}</option>;
-              })}
-            </SelectField>
+            <CustomSelect
+              value={monthTo}
+              onChange={handleMonthTo}
+              className="w-24"
+              options={MONTH_NAMES.slice(1).map((name, i) => ({
+                value: (i + 1).toString().padStart(2, "0"),
+                label: name,
+              }))}
+            />
           </div>
         )}
       </div>

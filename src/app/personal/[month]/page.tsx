@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useMemo } from "react";
 import { Download, ChevronDown, ChevronUp, AlertTriangle, ChevronsUpDown, Search, X, UserPlus, Pencil } from "lucide-react";
+import { CustomSelect } from "@/components/CustomSelect";
 import { SelectField } from "@/components/SelectField";
 import { useCompany } from "@/contexts/CompanyContext";
 import { useCodebook } from "@/hooks/useCodebook";
@@ -544,19 +545,14 @@ function PairSelect({ label, value, onChange, options, placeholder }: {
   return (
     <div>
       <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>
-      <div className="relative">
-        <select
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className="appearance-none w-full px-3 pr-8 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-orange-300 cursor-pointer hover:border-gray-300 transition-colors"
-        >
-          <option value="">{placeholder || "— vyber —"}</option>
-          {allOptions.map((o) => (
-            <option key={o} value={o}>{o}</option>
-          ))}
-        </select>
-        <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-      </div>
+      <CustomSelect
+        value={value}
+        onChange={onChange}
+        options={[
+          { value: "", label: placeholder || "— vyber —" },
+          ...allOptions.map((o) => ({ value: o, label: o })),
+        ]}
+      />
     </div>
   );
 }

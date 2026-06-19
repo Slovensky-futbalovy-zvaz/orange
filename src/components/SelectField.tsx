@@ -1,22 +1,32 @@
-import { ChevronDown } from "lucide-react";
+"use client";
+import { Children, isValidElement } from "react";
+import { CustomSelect } from "./CustomSelect";
 
-interface SelectFieldProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+interface SelectFieldProps {
+  value: string;
+  onChange: React.ChangeEventHandler<HTMLSelectElement>;
   children: React.ReactNode;
+  className?: string;
 }
 
-export function SelectField({ children, className = "", ...props }: SelectFieldProps) {
+export function SelectField({ value, onChange, children, className }: SelectFieldProps) {
+  const options = Children.toArray(children)
+    .filter((c): c is React.ReactElement<{ value?: string; children?: React.ReactNode }> =>
+      isValidElement(c)
+    )
+    .map((c) => ({
+      value: String(c.props.value ?? ""),
+      label: String(c.props.children ?? ""),
+    }));
+
   return (
-    <div className="relative inline-block">
-      <select
-        {...props}
-        className={`appearance-none bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-300 cursor-pointer hover:border-gray-300 transition-colors ${className}`}
-      >
-        {children}
-      </select>
-      <ChevronDown
-        size={14}
-        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-      />
-    </div>
+    <CustomSelect
+      value={value}
+      onChange={(v) =>
+        onChange({ target: { value: v } } as React.ChangeEvent<HTMLSelectElement>)
+      }
+      options={options}
+      className={className}
+    />
   );
 }

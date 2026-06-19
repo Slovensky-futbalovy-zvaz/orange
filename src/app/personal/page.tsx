@@ -5,6 +5,7 @@ import {
   Download, ChevronDown, ChevronUp, AlertTriangle,
   ChevronsUpDown, Search, X, UserPlus, FileText, Pencil,
 } from "lucide-react";
+import { CustomSelect } from "@/components/CustomSelect";
 import { SelectField } from "@/components/SelectField";
 import { useCompany } from "@/contexts/CompanyContext";
 import { useCodebook } from "@/hooks/useCodebook";
@@ -634,16 +635,14 @@ function PairSelect({ label, value, onChange, options, placeholder }: {
   return (
     <div>
       <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>
-      <select
+      <CustomSelect
         value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-orange-300 appearance-none"
-      >
-        <option value="">{placeholder || "— vyber —"}</option>
-        {allOptions.map((o) => (
-          <option key={o} value={o}>{o}</option>
-        ))}
-      </select>
+        onChange={onChange}
+        options={[
+          { value: "", label: placeholder || "— vyber —" },
+          ...allOptions.map((o) => ({ value: o, label: o })),
+        ]}
+      />
     </div>
   );
 }

@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Plus, Pencil, Trash2, Upload, Search, X, Check, ChevronDown } from "lucide-react";
+import { Plus, Pencil, Trash2, Upload, Search, X, Check } from "lucide-react";
 import { SelectField } from "@/components/SelectField";
+import { CustomSelect } from "@/components/CustomSelect";
 import { useCompany } from "@/contexts/CompanyContext";
 import { useCodebook } from "@/hooks/useCodebook";
 import * as XLSX from "xlsx";
@@ -195,19 +196,14 @@ export default function OsobyPage() {
             <Field label="Číslo (serviceIdentification)" value={form.serviceIdentification} onChange={(v) => setForm({ ...form, serviceIdentification: v })} placeholder="0902198279" />
             <div>
               <label className="block text-xs font-medium text-gray-600 mb-1">Spoločnosť</label>
-              <div className="relative">
-                <select
-                  value={form.cn}
-                  onChange={(e) => setForm({ ...form, cn: e.target.value })}
-                  className="appearance-none w-full px-3 pr-8 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 bg-white cursor-pointer hover:border-gray-300 transition-colors"
-                >
-                  <option value="">— vyber spoločnosť —</option>
-                  {companies.map((c) => (
-                    <option key={c.cn} value={c.cn}>{c.companyName}</option>
-                  ))}
-                </select>
-                <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-              </div>
+              <CustomSelect
+                value={form.cn}
+                onChange={(v) => setForm({ ...form, cn: v })}
+                options={[
+                  { value: "", label: "— vyber spoločnosť —" },
+                  ...companies.map((c) => ({ value: c.cn, label: c.companyName })),
+                ]}
+              />
             </div>
             <CodebookSelect
               label="Stredisko"
@@ -309,19 +305,14 @@ function CodebookSelect({ label, value, onChange, options, placeholder }: {
   return (
     <div>
       <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>
-      <div className="relative">
-        <select
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className="appearance-none w-full px-3 pr-8 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-orange-300 cursor-pointer hover:border-gray-300 transition-colors"
-        >
-          <option value="">{placeholder || "— vyber —"}</option>
-          {allOptions.map((o) => (
-            <option key={o} value={o}>{o}</option>
-          ))}
-        </select>
-        <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-      </div>
+      <CustomSelect
+        value={value}
+        onChange={onChange}
+        options={[
+          { value: "", label: placeholder || "— vyber —" },
+          ...allOptions.map((o) => ({ value: o, label: o })),
+        ]}
+      />
     </div>
   );
 }
