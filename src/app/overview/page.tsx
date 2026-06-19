@@ -77,20 +77,6 @@ const PIE_COLORS = [
   "#3b82f6", "#ef4444", "#14b8a6", "#f97316", "#84cc16",
 ];
 
-type TabKey = "sfz" | "marketing" | "all";
-
-const TABS: { key: TabKey; label: string; cn: string }[] = [
-  { key: "sfz",       label: "SFZ",            cn: "0252080007" },
-  { key: "marketing", label: "SFZ Marketing",  cn: "0252219878" },
-  { key: "all",       label: "Všetky",          cn: "" },
-];
-
-function cnToTab(cn: string): TabKey {
-  if (cn === "0252080007") return "sfz";
-  if (cn === "0252219878") return "marketing";
-  return "all";
-}
-
 function SelectField({
   value, onChange, children, className = "",
 }: {
@@ -114,8 +100,16 @@ function SelectField({
 }
 
 export default function AnalyzyPage() {
-  const { selectedCn } = useCompany();
-  const [activeTab, setActiveTab] = useState<TabKey>(cnToTab(selectedCn));
+  const { selectedCn, companies } = useCompany();
+
+  // Taby: dynamicky podľa povolených spoločností (pre admina všetky, pre usera len jeho)
+  // "Všetky" tab zobrazíme len keď je viac ako 1 spoločnosť
+  const tabs = [
+    ...companies.map((c) => ({ label: c.companyName, cn: c.cn })),
+    ...(companies.length > 1 ? [{ label: "Všetky", cn: "" }] : []),
+  ];
+
+  const [activeCn, setActiveCn] = useState(selectedCn);
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -127,8 +121,7 @@ export default function AnalyzyPage() {
 
   // Fetch available years on mount / tab change
   useEffect(() => {
-    const cn = TABS.find((t) => t.key === activeTab)?.cn ?? "";
-    const qs = cn ? `?cn=${cn}` : "";
+    const qs = activeCn ? `?cn=${activeCn}` : "";
     fetch(`/api/periods${qs}`)
       .then((r) => r.json())
       .then((d: { years: string[]; latestYear: string; latestMonth: string }) => {
@@ -137,11 +130,10 @@ export default function AnalyzyPage() {
         setMonthFrom("01");
         setMonthTo(d.latestMonth);
       });
-  }, [activeTab]);
+  }, [activeCn]);
 
-  const fetchData = useCallback((tab: TabKey, yr: string, mFrom: string, mTo: string) => {
+  const fetchData = useCallback((cn: string, yr: string, mFrom: string, mTo: string) => {
     setLoading(true);
-    const cn = TABS.find((t) => t.key === tab)?.cn ?? "";
     const params = new URLSearchParams();
     if (cn) params.set("cn", cn);
     if (yr) { params.set("year", yr); params.set("monthFrom", mFrom); params.set("monthTo", mTo); }
@@ -153,12 +145,12 @@ export default function AnalyzyPage() {
   // Fetch data when tab or period changes
   useEffect(() => {
     if (!year) return; // wait for periods to load
-    fetchData(activeTab, year, monthFrom, monthTo);
-  }, [activeTab, year, monthFrom, monthTo, fetchData]);
+    fetchData(activeCn, year, monthFrom, monthTo);
+  }, [activeCn, year, monthFrom, monthTo, fetchData]);
 
   // Sync tab when sidebar switcher changes
   useEffect(() => {
-    setActiveTab(cnToTab(selectedCn));
+    setActiveCn(selectedCn);
   }, [selectedCn]);
 
   // Clamp monthTo >= monthFrom
@@ -196,21 +188,23 @@ export default function AnalyzyPage() {
 
       {/* Tabs + Period filter */}
       <div className="flex flex-wrap items-center gap-3">
-        <div className="flex gap-1 bg-gray-100 p-1 rounded-xl">
-          {TABS.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
-                activeTab === tab.key
-                  ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
+        {tabs.length > 1 && (
+          <div className="flex gap-1 bg-gray-100 p-1 rounded-xl">
+            {tabs.map((tab) => (
+              <button
+                key={tab.cn}
+                onClick={() => setActiveCn(tab.cn)}
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+                  activeCn === tab.cn
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Period filters */}
         {years.length > 0 && (
