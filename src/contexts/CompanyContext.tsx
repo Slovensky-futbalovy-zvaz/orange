@@ -25,10 +25,15 @@ export function CompanyProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const stored = localStorage.getItem("selectedCn") ?? "";
-    setSelectedCnState(stored);
     fetch("/api/companies")
-      .then((r) => r.json())
-      .then(setCompanies);
+      .then((r) => (r.ok ? r.json() : []))
+      .then((list: Company[]) => {
+        setCompanies(list);
+        // Ak uložená spoločnosť nie je v povolenom zozname, resetuj výber
+        const valid = stored === "" || list.some((c) => c.cn === stored);
+        setSelectedCnState(valid ? stored : "");
+        if (!valid) localStorage.removeItem("selectedCn");
+      });
   }, []);
 
   function setSelectedCn(cn: string) {

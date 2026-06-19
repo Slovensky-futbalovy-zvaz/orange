@@ -94,9 +94,9 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer — info o prihlásenom používateľovi */}
-      <div className="p-3 border-t border-gray-200">
+      <div className="p-3 border-t border-gray-200 space-y-2">
         {user && (
-          <div className="flex items-center justify-between">
+          <>
             <div className="min-w-0">
               <div className="text-xs font-medium text-gray-700 truncate">
                 {user.firstName} {user.lastName}
@@ -105,12 +105,12 @@ export default function Sidebar() {
             </div>
             <button
               onClick={logout}
-              className="ml-2 p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
-              title="Odhlásiť sa"
+              className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
             >
-              <LogOut size={14} />
+              <LogOut size={13} />
+              Odhlásiť sa
             </button>
-          </div>
+          </>
         )}
       </div>
     </aside>
