@@ -21,6 +21,7 @@ async function sendEmail(
         subject,
         from_name: FROM_NAME,
         from_email: FROM_EMAIL,
+        reply_to: process.env.REPLY_TO_EMAIL || FROM_EMAIL,
         html,
         text: html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(),
         to: [{ email: toEmail, name: toName }],
