@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Signal, Mail, User, Loader2, CheckCircle, AlertCircle } from "lucide-react";
+import { Signal, Mail, User, Loader2, CheckCircle, AlertCircle, Settings } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 
 type Mode = "login" | "setup";
@@ -11,6 +11,7 @@ export default function LoginPage() {
   const [submitting, setSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
+  const [fromEmailSet, setFromEmailSet] = useState(true);
 
   // Setup formulár
   const [email, setEmail] = useState("");
@@ -21,11 +22,11 @@ export default function LoginPage() {
   const urlError = searchParams.get("error");
 
   useEffect(() => {
-    // Zistiť, či existuje nejaký používateľ
     fetch("/api/auth/setup")
       .then((r) => r.json())
-      .then(({ isEmpty }) => {
+      .then(({ isEmpty, fromEmailSet: fe }) => {
         setMode(isEmpty ? "setup" : "login");
+        setFromEmailSet(fe !== false);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -87,6 +88,68 @@ export default function LoginPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <Loader2 className="animate-spin text-orange-500" size={32} />
+      </div>
+    );
+  }
+
+  if (!fromEmailSet) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-sm border border-orange-200 p-8 w-full max-w-md">
+          <div className="flex items-center gap-2 mb-6">
+            <div className="w-9 h-9 bg-orange-500 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Signal size={18} className="text-white" />
+            </div>
+            <div>
+              <div className="font-semibold text-gray-900 text-sm leading-tight">Orange Fakturácia</div>
+              <div className="text-xs text-gray-400">Prehľad fakturácie mobilných služieb</div>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3 p-4 bg-orange-50 border border-orange-200 rounded-xl mb-6">
+            <Settings size={18} className="text-orange-500 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-semibold text-orange-800 mb-1">Chýba konfigurácia</p>
+              <p className="text-sm text-orange-700">
+                Premenná <code className="bg-orange-100 px-1 rounded font-mono text-xs">FROM_EMAIL</code> nie
+                je nastavená. Aplikácia nemôže vytvoriť primárneho správcu ani odosielať emaily.
+              </p>
+            </div>
+          </div>
+
+          <h2 className="text-sm font-semibold text-gray-800 mb-3">Ako to opraviť</h2>
+          <ol className="space-y-3 text-sm text-gray-600">
+            <li className="flex gap-2">
+              <span className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 text-xs font-semibold flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+              <span>
+                Otvorte súbor <code className="bg-gray-100 px-1 rounded font-mono text-xs">.env.local</code> v
+                koreňovom adresári projektu.
+              </span>
+            </li>
+            <li className="flex gap-2">
+              <span className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 text-xs font-semibold flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+              <span>
+                Pridajte riadok:
+                <code className="block mt-1 bg-gray-100 px-2 py-1 rounded font-mono text-xs text-gray-800">
+                  FROM_EMAIL=vas.email@domena.sk
+                </code>
+              </span>
+            </li>
+            <li className="flex gap-2">
+              <span className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 text-xs font-semibold flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
+              <span>
+                Na Vercel pridajte túto premennú v <strong>Settings → Environment Variables</strong> a
+                znova nasaďte aplikáciu.
+              </span>
+            </li>
+            <li className="flex gap-2">
+              <span className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 text-xs font-semibold flex items-center justify-center flex-shrink-0 mt-0.5">4</span>
+              <span>
+                Po reštarte sa konto primárneho správcu vytvorí automaticky a budete sa môcť prihlásiť.
+              </span>
+            </li>
+          </ol>
+        </div>
       </div>
     );
   }
