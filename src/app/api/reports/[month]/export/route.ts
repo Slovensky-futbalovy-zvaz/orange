@@ -74,7 +74,7 @@ export async function GET(req: NextRequest, { params }: { params: { month: strin
   }
   const sheet2Data = [
     ["Stredisko", "Počet čísel", "Celkové náklady (€)", "Suma nadlimitov (€)"],
-    ...[...byDept.entries()]
+    ...Array.from(byDept.entries())
       .sort((a, b) => b[1].overTheLimit - a[1].overTheLimit)
       .map(([s, d]) => [s, d.count, +d.total.toFixed(2), +d.overTheLimit.toFixed(2)]),
   ];
