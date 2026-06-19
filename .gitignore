@@ -39,3 +39,6 @@ next-env.d.ts
 
 # Vercel
 .vercel
+
+# Lock file — contains invalid semver from optional platform bindings (breaks npm on Vercel)
+package-lock.json
