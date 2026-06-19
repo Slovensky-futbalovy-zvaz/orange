@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import Person from "@/models/Person";
 import Invoice from "@/models/Invoice";
+import { getCurrentUser } from "@/lib/auth";
 
 // GET /api/persons/[id]
 export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
@@ -15,6 +16,10 @@ export async function GET(_: NextRequest, { params }: { params: { id: string } }
 
 // PUT /api/persons/[id]
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+  const me = await getCurrentUser();
+  if (!me || me.role !== "admin") {
+    return NextResponse.json({ error: "Prístup zamietnutý." }, { status: 403 });
+  }
   await connectDB();
   const body = await req.json();
   if (body.serviceIdentification) {
@@ -46,6 +51,10 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 
 // DELETE /api/persons/[id]  (soft delete)
 export async function DELETE(_: NextRequest, { params }: { params: { id: string } }) {
+  const me = await getCurrentUser();
+  if (!me || me.role !== "admin") {
+    return NextResponse.json({ error: "Prístup zamietnutý." }, { status: 403 });
+  }
   await connectDB();
   await Person.findByIdAndUpdate(params.id, { personActive: false });
   return NextResponse.json({ ok: true });

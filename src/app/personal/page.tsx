@@ -8,6 +8,7 @@ import {
 import { CustomSelect } from "@/components/CustomSelect";
 import { SelectField } from "@/components/SelectField";
 import { useCompany } from "@/contexts/CompanyContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { useCodebook } from "@/hooks/useCodebook";
 
 // ─── Interfaces ────────────────────────────────────────────────────────────
@@ -65,6 +66,8 @@ const COMPANY_COLORS = [
 
 export default function OverTheLimitPage() {
   const { selectedCn, companies } = useCompany();
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
   const { values: cbDepartments } = useCodebook("department");
   const { values: cbProfileTypes } = useCodebook("profileType");
 
@@ -336,8 +339,8 @@ export default function OverTheLimitPage() {
         </div>
       )}
 
-      {/* Edit modal */}
-      {editingInvoice && (
+      {/* Edit modal — len pre admin */}
+      {isAdmin && editingInvoice && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 p-6">
             <div className="flex items-center gap-2 mb-4">
@@ -539,7 +542,7 @@ export default function OverTheLimitPage() {
                         {inv.personName || (
                           <span className="text-gray-400 italic">Nespárované</span>
                         )}
-                        {!inv.personName ? (
+                        {isAdmin && (!inv.personName ? (
                           <button
                             onClick={(e) => openPair(inv, e)}
                             className="inline-flex items-center gap-1 text-xs text-orange-600 hover:text-orange-700 bg-orange-50 hover:bg-orange-100 px-2 py-0.5 rounded-full border border-orange-200 transition-colors"
@@ -554,7 +557,7 @@ export default function OverTheLimitPage() {
                           >
                             <Pencil size={13} />
                           </button>
-                        )}
+                        ))}
                       </div>
                       <div className="text-xs text-gray-400">
                         {inv.serviceIdentification} · {inv.userName}
