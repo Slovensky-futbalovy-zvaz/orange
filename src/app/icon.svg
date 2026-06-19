@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Orange rounded square background -->
+  <rect width="32" height="32" rx="7" fill="#f97316"/>
+  <!-- Signal bars (lucide Signal, scaled from 24x24 to fit in 32x32 with 4px padding) -->
+  <g stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none">
+    <!-- dot -->
+    <circle cx="4" cy="26" r="1.25" fill="white" stroke="none"/>
+    <!-- bar 1 (shortest) -->
+    <line x1="10" y1="26" x2="10" y2="21"/>
+    <!-- bar 2 -->
+    <line x1="16" y1="26" x2="16" y2="16"/>
+    <!-- bar 3 -->
+    <line x1="22" y1="26" x2="22" y2="11"/>
+    <!-- bar 4 (tallest) -->
+    <line x1="28" y1="26" x2="28" y2="6"/>
+  </g>
+</svg>
