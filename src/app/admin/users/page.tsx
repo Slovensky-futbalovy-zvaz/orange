@@ -1,8 +1,9 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   UserPlus, Trash2, Mail, Shield, User as UserIcon,
   Loader2, CheckCircle, AlertCircle, Building2, X, RefreshCw,
+  ChevronDown, Check,
 } from "lucide-react";
 
 interface UserRow {
@@ -46,9 +47,15 @@ export default function AdminUsersPage() {
 
   // Edit modal
   const [editUser, setEditUser] = useState<UserRow | null>(null);
+  const [editFirstName, setEditFirstName] = useState("");
+  const [editLastName, setEditLastName] = useState("");
   const [editCompanies, setEditCompanies] = useState<string[]>([]);
   const [editRole, setEditRole] = useState<"admin" | "user">("user");
   const [editSubmitting, setEditSubmitting] = useState(false);
+  const [editDropdownOpen, setEditDropdownOpen] = useState(false);
+  const editDropdownRef = useRef<HTMLDivElement>(null);
+  const [invDropdownOpen, setInvDropdownOpen] = useState(false);
+  const invDropdownRef = useRef<HTMLDivElement>(null);
 
   const loadUsers = useCallback(async () => {
     setLoading(true);
@@ -121,10 +128,27 @@ export default function AdminUsersPage() {
     }
   }
 
+  // Zatvoriť dropdown po kliku mimo neho
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (editDropdownRef.current && !editDropdownRef.current.contains(e.target as Node)) {
+        setEditDropdownOpen(false);
+      }
+      if (invDropdownRef.current && !invDropdownRef.current.contains(e.target as Node)) {
+        setInvDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   function openEdit(u: UserRow) {
     setEditUser(u);
+    setEditFirstName(u.firstName);
+    setEditLastName(u.lastName);
     setEditCompanies(u.companies);
     setEditRole(u.role);
+    setEditDropdownOpen(false);
   }
 
   async function handleEdit(e: React.FormEvent) {
@@ -135,6 +159,8 @@ export default function AdminUsersPage() {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        firstName: editFirstName.trim(),
+        lastName: editLastName.trim(),
         role: editRole,
         companies: editRole === "admin" ? [] : editCompanies,
       }),
@@ -232,25 +258,43 @@ export default function AdminUsersPage() {
             </div>
             {invRole === "user" && (
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-2">
-                  <Building2 size={12} className="inline mr-1" />
+                <label className="block text-xs font-medium text-gray-600 mb-1">
                   Spoločnosti
                 </label>
-                <div className="flex flex-wrap gap-2">
-                  {companies.map((c) => (
-                    <button
-                      key={c.cn}
-                      type="button"
-                      onClick={() => toggleCompany(c.cn, invCompanies, setInvCompanies)}
-                      className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
-                        invCompanies.includes(c.cn)
-                          ? "bg-orange-100 border-orange-300 text-orange-700"
-                          : "bg-gray-50 border-gray-200 text-gray-600 hover:border-gray-300"
-                      }`}
-                    >
-                      {c.companyName}
-                    </button>
-                  ))}
+                <div ref={invDropdownRef} className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setInvDropdownOpen((o) => !o)}
+                    className="w-full flex items-center justify-between px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 transition-colors"
+                  >
+                    <span className="text-gray-600 truncate">
+                      {invCompanies.length === 0
+                        ? "Vybrať spoločnosti…"
+                        : companies.filter((c) => invCompanies.includes(c.cn)).map((c) => c.companyName).join(", ")}
+                    </span>
+                    <ChevronDown size={14} className={`text-gray-400 flex-shrink-0 transition-transform ${invDropdownOpen ? "rotate-180" : ""}`} />
+                  </button>
+                  {invDropdownOpen && (
+                    <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+                      {companies.map((c) => (
+                        <button
+                          key={c.cn}
+                          type="button"
+                          onClick={() => toggleCompany(c.cn, invCompanies, setInvCompanies)}
+                          className="w-full flex items-center gap-3 px-3 py-2 text-sm text-left hover:bg-gray-50 transition-colors"
+                        >
+                          <div className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 transition-colors ${
+                            invCompanies.includes(c.cn)
+                              ? "bg-orange-500 border-orange-500"
+                              : "border-gray-300"
+                          }`}>
+                            {invCompanies.includes(c.cn) && <Check size={10} className="text-white" />}
+                          </div>
+                          <span className="text-gray-700">{c.companyName}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -383,7 +427,7 @@ export default function AdminUsersPage() {
           <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-semibold text-gray-900">
-                Upraviť: {editUser.firstName} {editUser.lastName}
+                Upraviť používateľa
               </h2>
               <button
                 onClick={() => setEditUser(null)}
@@ -393,6 +437,28 @@ export default function AdminUsersPage() {
               </button>
             </div>
             <form onSubmit={handleEdit} className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Meno</label>
+                  <input
+                    type="text"
+                    value={editFirstName}
+                    onChange={(e) => setEditFirstName(e.target.value)}
+                    required
+                    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Priezvisko</label>
+                  <input
+                    type="text"
+                    value={editLastName}
+                    onChange={(e) => setEditLastName(e.target.value)}
+                    required
+                    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300"
+                  />
+                </div>
+              </div>
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">Rola</label>
                 <select
@@ -406,24 +472,43 @@ export default function AdminUsersPage() {
               </div>
               {editRole === "user" && (
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-2">
+                  <label className="block text-xs font-medium text-gray-600 mb-1">
                     Spoločnosti
                   </label>
-                  <div className="flex flex-wrap gap-2">
-                    {companies.map((c) => (
-                      <button
-                        key={c.cn}
-                        type="button"
-                        onClick={() => toggleCompany(c.cn, editCompanies, setEditCompanies)}
-                        className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
-                          editCompanies.includes(c.cn)
-                            ? "bg-orange-100 border-orange-300 text-orange-700"
-                            : "bg-gray-50 border-gray-200 text-gray-600 hover:border-gray-300"
-                        }`}
-                      >
-                        {c.companyName}
-                      </button>
-                    ))}
+                  <div ref={editDropdownRef} className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setEditDropdownOpen((o) => !o)}
+                      className="w-full flex items-center justify-between px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 transition-colors"
+                    >
+                      <span className="text-gray-600 truncate">
+                        {editCompanies.length === 0
+                          ? "Vybrať spoločnosti…"
+                          : companies.filter((c) => editCompanies.includes(c.cn)).map((c) => c.companyName).join(", ")}
+                      </span>
+                      <ChevronDown size={14} className={`text-gray-400 flex-shrink-0 transition-transform ${editDropdownOpen ? "rotate-180" : ""}`} />
+                    </button>
+                    {editDropdownOpen && (
+                      <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+                        {companies.map((c) => (
+                          <button
+                            key={c.cn}
+                            type="button"
+                            onClick={() => toggleCompany(c.cn, editCompanies, setEditCompanies)}
+                            className="w-full flex items-center gap-3 px-3 py-2 text-sm text-left hover:bg-gray-50 transition-colors"
+                          >
+                            <div className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 transition-colors ${
+                              editCompanies.includes(c.cn)
+                                ? "bg-orange-500 border-orange-500"
+                                : "border-gray-300"
+                            }`}>
+                              {editCompanies.includes(c.cn) && <Check size={10} className="text-white" />}
+                            </div>
+                            <span className="text-gray-700">{c.companyName}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
