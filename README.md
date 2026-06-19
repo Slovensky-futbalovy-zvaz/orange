@@ -37,14 +37,17 @@ cp .env.local.example .env.local
 
 Vyplň premenné v `.env.local`:
 
-| Premenná | Popis |
-|---|---|
-| `MONGODB_URI` | MongoDB connection string |
-| `JWT_SECRET` | Náhodný tajný kľúč (`openssl rand -base64 32`) |
-| `ECOMAIL_API_KEY` | API kľúč z Ecomail.cz |
-| `FROM_EMAIL` | Emailová adresa odosielateľa |
-| `FROM_NAME` | Meno odosielateľa (napr. `Orange Fakturácia`) |
-| `APP_URL` | Verejná URL aplikácie (bez lomítka na konci) |
+| Premenná | Povinná | Popis |
+|---|---|---|
+| `MONGODB_URI` | ✅ | MongoDB connection string (Atlas alebo lokálny) |
+| `JWT_SECRET` | ✅ | Náhodný tajný kľúč — vygeneruj: `openssl rand -base64 32` |
+| `ECOMAIL_API_KEY` | ✅ | API kľúč z Ecomail → Nastavenia → API |
+| `FROM_EMAIL` | ✅ | Odosielateľ emailov — musí byť z domény **overenej v Ecomail**. Táto adresa sa zároveň použije ako email primárneho správcu pri prvom štarte. |
+| `FROM_NAME` | — | Zobrazované meno odosielateľa (predvolené: `Orange Fakturácia`) |
+| `REPLY_TO_EMAIL` | — | Adresa pre odpovede — užitočné ak `FROM_EMAIL` je no-reply adresa. Ak nie je nastavená, použije sa `FROM_EMAIL`. |
+| `APP_URL` | ✅ | Verejná URL aplikácie bez lomítka (napr. `https://orange.domena.sk`) |
+
+> **Ecomail a doména:** Transaktičné emaily vyžadujú overenú odosielaciu doménu. Overiť ju môžeš v Ecomail → Nastavenia → Odosielacie domény pridaním SPF/DKIM záznamov do DNS. Ak používaš subdoménu (napr. `mail.domena.sk`) ako `FROM_EMAIL`, nastav `REPLY_TO_EMAIL` na svoju skutočnú schránku.
 
 ### 3. Spustenie
 
@@ -52,18 +55,20 @@ Vyplň premenné v `.env.local`:
 npm run dev
 ```
 
-Otvor `http://localhost:3000` — pri prvom spustení sa zobrazí formulár na vytvorenie správcovského konta.
+Otvor `http://localhost:3000` — ak `FROM_EMAIL` nie je nastavená, login stránka zobrazí konfiguračný návod.
 
 ## Deployment na Vercel
 
-1. Pushuješ na GitHub
-2. Importuješ projekt vo [vercel.com](https://vercel.com) → **Add New Project**
-3. Nastavíš environment variables (viď tabuľka vyššie)
-4. Klikneš **Deploy**
+1. Pushnúť na GitHub
+2. Importovať projekt na [vercel.com](https://vercel.com) → **Add New Project**
+3. Nastaviť environment variables (viď tabuľka vyššie)
+4. Kliknúť **Deploy**
+
+> **IP whitelist:** Vercel používa dynamické IP adresy — v MongoDB Atlas nastav Network Access na `0.0.0.0/0` (Allow Access from Anywhere).
 
 ## Prvé prihlásenie
 
-Pri prvom spustení (prázdna databáza) login stránka zobrazí formulár na registráciu prvého správcu. Po vyplnení príde aktivačný email s odkazom.
+Pri prvom štarte aplikácia automaticky vytvorí konto primárneho správcu s emailom nastaveným v `FROM_EMAIL`. Na login stránke zadaj túto adresu a príde ti magic link.
 
 Ďalší používatelia sa pridávajú cez **Admin → Používatelia → Pozvať**.
 
