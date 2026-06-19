@@ -9,10 +9,15 @@ import {
   FileText,
   Users,
   ArrowRight,
+  Mail,
 } from "lucide-react";
+
+import { ORG_NAME } from "@/config";
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET!);
 const AUTH_COOKIE = "ov_auth";
+
+const CONTACT_EMAIL = process.env.REPLY_TO_EMAIL ?? "";
 
 export default async function RootPage() {
   // Ak je používateľ prihlásený, presmeruj na prehľad
@@ -39,12 +44,23 @@ export default async function RootPage() {
             </div>
             <span className="font-semibold text-gray-900">Orange Fakturácia</span>
           </div>
-          <Link
-            href="/login"
-            className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1.5"
-          >
-            Prihlásiť sa <ArrowRight size={14} />
-          </Link>
+          <div className="flex items-center gap-3">
+            {CONTACT_EMAIL && (
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1.5 transition-colors"
+              >
+                <Mail size={14} />
+                Kontakt na správcu
+              </a>
+            )}
+            <Link
+              href="/login"
+              className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1.5"
+            >
+              Prihlásiť sa <ArrowRight size={14} />
+            </Link>
+          </div>
         </div>
       </nav>
 
@@ -52,7 +68,7 @@ export default async function RootPage() {
       <section className="max-w-5xl mx-auto px-6 pt-16 pb-12 text-center">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-orange-50 border border-orange-200 rounded-full text-xs font-medium text-orange-700 mb-6">
           <Signal size={12} />
-          Slovenský futbalový zväz
+          {ORG_NAME}
         </div>
         <h1 className="text-4xl font-bold text-gray-900 mb-4 leading-tight">
           Prehľad fakturácie<br />
@@ -118,8 +134,19 @@ export default async function RootPage() {
       {/* Footer */}
       <footer className="border-t border-gray-200 bg-white">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between text-xs text-gray-400">
-          <span>© {new Date().getFullYear()} Slovenský futbalový zväz</span>
-          <span>Orange Fakturácia</span>
+          <span>© {new Date().getFullYear()} {ORG_NAME}</span>
+          <div className="flex items-center gap-4">
+            {CONTACT_EMAIL && (
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                className="hover:text-gray-600 flex items-center gap-1 transition-colors"
+              >
+                <Mail size={12} />
+                Kontakt na správcu
+              </a>
+            )}
+            <span>Orange Fakturácia</span>
+          </div>
         </div>
       </footer>
     </div>
