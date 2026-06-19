@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import {
   Users, Upload, FileText, BarChart2,
   Building2, Landmark, Signal, ChevronDown, Layers, BookOpen,
-  LogOut, Shield,
+  LogOut, Shield, Github,
 } from "lucide-react";
 import { useCompany } from "@/contexts/CompanyContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -55,49 +55,49 @@ export default function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-3 space-y-1">
-        {nav.map(({ href, label, icon: Icon }) => {
-          const active =
-            pathname === href ||
-            pathname.startsWith(href + "/") ||
-            (href === "/overview" && pathname === "/");
-          return (
+      <nav className="flex-1 p-3 flex flex-col">
+        <div className="space-y-1">
+          {nav.map(({ href, label, icon: Icon }) => {
+            const active =
+              pathname === href ||
+              pathname.startsWith(href + "/") ||
+              (href === "/overview" && pathname === "/");
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+                  active
+                    ? "bg-orange-50 text-orange-700 font-medium"
+                    : "text-gray-600 hover:bg-gray-100"
+                }`}
+              >
+                <Icon size={16} />
+                {label}
+              </Link>
+            );
+          })}
+
+          {/* Správa používateľov — len admin */}
+          {user?.role === "admin" && (
             <Link
-              key={href}
-              href={href}
+              href="/admin/users"
               className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-                active
+                pathname.startsWith("/admin/users")
                   ? "bg-orange-50 text-orange-700 font-medium"
                   : "text-gray-600 hover:bg-gray-100"
               }`}
             >
-              <Icon size={16} />
-              {label}
+              <Shield size={16} />
+              Používatelia
             </Link>
-          );
-        })}
+          )}
+        </div>
 
-        {/* Správa používateľov — len admin */}
-        {user?.role === "admin" && (
-          <Link
-            href="/admin/users"
-            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-              pathname.startsWith("/admin/users")
-                ? "bg-orange-50 text-orange-700 font-medium"
-                : "text-gray-600 hover:bg-gray-100"
-            }`}
-          >
-            <Shield size={16} />
-            Používatelia
-          </Link>
-        )}
-      </nav>
-
-      {/* Footer — info o prihlásenom používateľovi */}
-      <div className="p-3 border-t border-gray-200 space-y-2">
+        {/* Info o používateľovi + odhlásenie — priamo pod menu */}
         {user && (
-          <>
-            <div className="min-w-0">
+          <div className="mt-3 pt-3 border-t border-gray-100 space-y-1">
+            <div className="px-3 py-1.5">
               <div className="text-xs font-medium text-gray-700 truncate">
                 {user.firstName} {user.lastName}
               </div>
@@ -110,9 +110,22 @@ export default function Sidebar() {
               <LogOut size={13} />
               Odhlásiť sa
             </button>
-          </>
+          </div>
         )}
-      </div>
+
+        {/* GitHub odkaz */}
+        <div className="mt-2 pt-2 border-t border-gray-100">
+          <a
+            href="https://github.com/Slovensky-futbalovy-zvaz/orange"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-3 py-1.5 text-xs text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
+          >
+            <Github size={13} />
+            Zdrojový kód na GitHub
+          </a>
+        </div>
+      </nav>
     </aside>
   );
 }
