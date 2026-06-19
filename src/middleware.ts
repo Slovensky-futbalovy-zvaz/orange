@@ -40,7 +40,7 @@ export async function middleware(request: NextRequest) {
     const ADMIN_PREFIXES = [
       "/admin",
       "/api/admin",
-      "/firmy",
+      "/companies",
       "/people",
       "/import",
       "/codebook",

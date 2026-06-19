@@ -15,7 +15,7 @@ const nav = [
   { href: "/personal",  label: "Osobné",     icon: FileText  },
   { href: "/fees",      label: "Poplatky",   icon: Building2 },
   { href: "/services",  label: "Služby",     icon: Layers    },
-  { href: "/firmy",     label: "Firmy",      icon: Landmark,  adminOnly: true },
+  { href: "/companies", label: "Spoločnosti", icon: Landmark,  adminOnly: true },
   { href: "/people",    label: "Osoby",      icon: Users,     adminOnly: true },
   { href: "/import",    label: "Import",     icon: Upload,    adminOnly: true },
   { href: "/codebook",  label: "Číselníky",  icon: BookOpen,  adminOnly: true },
