@@ -52,10 +52,14 @@ export default function AdminUsersPage() {
   const [editCompanies, setEditCompanies] = useState<string[]>([]);
   const [editRole, setEditRole] = useState<"admin" | "user">("user");
   const [editSubmitting, setEditSubmitting] = useState(false);
-  const [editDropdownOpen, setEditDropdownOpen] = useState(false);
+  const [editCompanyDropdownOpen, setEditCompanyDropdownOpen] = useState(false);
+  const [editRoleDropdownOpen, setEditRoleDropdownOpen] = useState(false);
   const editDropdownRef = useRef<HTMLDivElement>(null);
+  const editRoleRef = useRef<HTMLDivElement>(null);
   const [invDropdownOpen, setInvDropdownOpen] = useState(false);
+  const [invRoleDropdownOpen, setInvRoleDropdownOpen] = useState(false);
   const invDropdownRef = useRef<HTMLDivElement>(null);
+  const invRoleRef = useRef<HTMLDivElement>(null);
 
   const loadUsers = useCallback(async () => {
     setLoading(true);
@@ -132,10 +136,16 @@ export default function AdminUsersPage() {
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (editDropdownRef.current && !editDropdownRef.current.contains(e.target as Node)) {
-        setEditDropdownOpen(false);
+        setEditCompanyDropdownOpen(false);
+      }
+      if (editRoleRef.current && !editRoleRef.current.contains(e.target as Node)) {
+        setEditRoleDropdownOpen(false);
       }
       if (invDropdownRef.current && !invDropdownRef.current.contains(e.target as Node)) {
         setInvDropdownOpen(false);
+      }
+      if (invRoleRef.current && !invRoleRef.current.contains(e.target as Node)) {
+        setInvRoleDropdownOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -148,7 +158,7 @@ export default function AdminUsersPage() {
     setEditLastName(u.lastName);
     setEditCompanies(u.companies);
     setEditRole(u.role);
-    setEditDropdownOpen(false);
+    setEditCompanyDropdownOpen(false);
   }
 
   async function handleEdit(e: React.FormEvent) {
@@ -246,14 +256,37 @@ export default function AdminUsersPage() {
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">Rola</label>
-                <select
-                  value={invRole}
-                  onChange={(e) => setInvRole(e.target.value as "admin" | "user")}
-                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 bg-white"
-                >
-                  <option value="user">Používateľ (read-only)</option>
-                  <option value="admin">Správca</option>
-                </select>
+                <div ref={invRoleRef} className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setInvRoleDropdownOpen((o) => !o)}
+                    className="w-full flex items-center justify-between px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 transition-colors"
+                  >
+                    <span className="text-gray-700">
+                      {invRole === "admin" ? "Správca" : "Používateľ (read-only)"}
+                    </span>
+                    <ChevronDown size={14} className={`text-gray-400 flex-shrink-0 transition-transform ${invRoleDropdownOpen ? "rotate-180" : ""}`} />
+                  </button>
+                  {invRoleDropdownOpen && (
+                    <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+                      {(["user", "admin"] as const).map((r) => (
+                        <button
+                          key={r}
+                          type="button"
+                          onClick={() => { setInvRole(r); setInvRoleDropdownOpen(false); }}
+                          className="w-full flex items-center gap-3 px-3 py-2 text-sm text-left hover:bg-gray-50 transition-colors"
+                        >
+                          <div className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 transition-colors ${
+                            invRole === r ? "bg-orange-500 border-orange-500" : "border-gray-300"
+                          }`}>
+                            {invRole === r && <div className="w-2 h-2 rounded-full bg-white" />}
+                          </div>
+                          <span className="text-gray-700">{r === "admin" ? "Správca" : "Používateľ (read-only)"}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
             {invRole === "user" && (
@@ -461,14 +494,37 @@ export default function AdminUsersPage() {
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">Rola</label>
-                <select
-                  value={editRole}
-                  onChange={(e) => setEditRole(e.target.value as "admin" | "user")}
-                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 bg-white"
-                >
-                  <option value="user">Používateľ (read-only)</option>
-                  <option value="admin">Správca</option>
-                </select>
+                <div ref={editRoleRef} className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setEditRoleDropdownOpen((o) => !o)}
+                    className="w-full flex items-center justify-between px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 transition-colors"
+                  >
+                    <span className="text-gray-700">
+                      {editRole === "admin" ? "Správca" : "Používateľ (read-only)"}
+                    </span>
+                    <ChevronDown size={14} className={`text-gray-400 flex-shrink-0 transition-transform ${editRoleDropdownOpen ? "rotate-180" : ""}`} />
+                  </button>
+                  {editRoleDropdownOpen && (
+                    <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+                      {(["user", "admin"] as const).map((r) => (
+                        <button
+                          key={r}
+                          type="button"
+                          onClick={() => { setEditRole(r); setEditRoleDropdownOpen(false); }}
+                          className="w-full flex items-center gap-3 px-3 py-2 text-sm text-left hover:bg-gray-50 transition-colors"
+                        >
+                          <div className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 transition-colors ${
+                            editRole === r ? "bg-orange-500 border-orange-500" : "border-gray-300"
+                          }`}>
+                            {editRole === r && <div className="w-2 h-2 rounded-full bg-white" />}
+                          </div>
+                          <span className="text-gray-700">{r === "admin" ? "Správca" : "Používateľ (read-only)"}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
               {editRole === "user" && (
                 <div>
@@ -478,7 +534,7 @@ export default function AdminUsersPage() {
                   <div ref={editDropdownRef} className="relative">
                     <button
                       type="button"
-                      onClick={() => setEditDropdownOpen((o) => !o)}
+                      onClick={() => setEditCompanyDropdownOpen((o) => !o)}
                       className="w-full flex items-center justify-between px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 transition-colors"
                     >
                       <span className="text-gray-600 truncate">
@@ -486,9 +542,9 @@ export default function AdminUsersPage() {
                           ? "Vybrať spoločnosti…"
                           : companies.filter((c) => editCompanies.includes(c.cn)).map((c) => c.companyName).join(", ")}
                       </span>
-                      <ChevronDown size={14} className={`text-gray-400 flex-shrink-0 transition-transform ${editDropdownOpen ? "rotate-180" : ""}`} />
+                      <ChevronDown size={14} className={`text-gray-400 flex-shrink-0 transition-transform ${editCompanyDropdownOpen ? "rotate-180" : ""}`} />
                     </button>
-                    {editDropdownOpen && (
+                    {editCompanyDropdownOpen && (
                       <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
                         {companies.map((c) => (
                           <button
