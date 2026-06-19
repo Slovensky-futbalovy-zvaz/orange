@@ -26,6 +26,18 @@ export default function Sidebar() {
   const { selectedCn, setSelectedCn, companies } = useCompany();
   const { user, logout } = useAuth();
 
+  const isAdmin = user?.role === "admin";
+  // Voľba „Všetky spoločnosti" má zmysel len pre admina alebo pre používateľa
+  // s prístupom k viacerým firmám. Používateľ s jedinou firmou ju nevidí —
+  // CompanyContext mu túto firmu automaticky vyberie.
+  const showAllOption = isAdmin || companies.length > 1;
+  const companyOptions = [
+    ...(showAllOption ? [{ value: "", label: "Všetky spoločnosti" }] : []),
+    ...companies.map((c) => ({ value: c.cn, label: c.companyName })),
+  ];
+  // Bežný používateľ bez priradenej firmy nemá čo prepínať — switcher skry.
+  const showSwitcher = isAdmin || companies.length > 0;
+
   return (
     <aside className="w-56 bg-white border-r border-gray-200 flex flex-col">
       {/* App header */}
@@ -37,14 +49,13 @@ export default function Sidebar() {
           <div className="font-semibold text-sm text-gray-900 leading-tight">Orange Fakturácia</div>
         </div>
         {/* Company switcher */}
-        <CustomSelect
-          value={selectedCn}
-          onChange={setSelectedCn}
-          options={[
-            { value: "", label: "Všetky spoločnosti" },
-            ...companies.map((c) => ({ value: c.cn, label: c.companyName })),
-          ]}
-        />
+        {showSwitcher && (
+          <CustomSelect
+            value={selectedCn}
+            onChange={setSelectedCn}
+            options={companyOptions}
+          />
+        )}
       </div>
 
       {/* Navigation */}
