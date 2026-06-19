@@ -36,10 +36,21 @@ export async function middleware(request: NextRequest) {
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);
 
-    // Admin-only cesty
-    if (pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) {
+    // Admin-only cesty (stránky aj API)
+    const ADMIN_PREFIXES = [
+      "/admin",
+      "/api/admin",
+      "/firmy",
+      "/people",
+      "/import",
+      "/codebook",
+      "/api/companies",
+      "/api/people",
+      "/api/codebook",
+    ];
+    if (ADMIN_PREFIXES.some((p) => pathname.startsWith(p))) {
       if (payload.role !== "admin") {
-        return NextResponse.redirect(new URL("/", request.url));
+        return NextResponse.redirect(new URL("/overview", request.url));
       }
     }
 

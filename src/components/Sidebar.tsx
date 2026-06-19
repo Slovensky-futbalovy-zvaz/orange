@@ -10,14 +10,14 @@ import { useCompany } from "@/contexts/CompanyContext";
 import { useAuth } from "@/contexts/AuthContext";
 
 const nav = [
-  { href: "/overview", label: "Prehľad", icon: BarChart2 },
-  { href: "/personal", label: "Osobné", icon: FileText },
-  { href: "/fees", label: "Poplatky", icon: Building2 },
-  { href: "/services", label: "Služby", icon: Layers },
-  { href: "/firmy", label: "Firmy", icon: Landmark },
-  { href: "/people",    label: "Osoby",     icon: Users    },
-  { href: "/import",    label: "Import",    icon: Upload   },
-  { href: "/codebook",  label: "Číselníky", icon: BookOpen },
+  { href: "/overview",  label: "Prehľad",    icon: BarChart2 },
+  { href: "/personal",  label: "Osobné",     icon: FileText  },
+  { href: "/fees",      label: "Poplatky",   icon: Building2 },
+  { href: "/services",  label: "Služby",     icon: Layers    },
+  { href: "/firmy",     label: "Firmy",      icon: Landmark,  adminOnly: true },
+  { href: "/people",    label: "Osoby",      icon: Users,     adminOnly: true },
+  { href: "/import",    label: "Import",     icon: Upload,    adminOnly: true },
+  { href: "/codebook",  label: "Číselníky",  icon: BookOpen,  adminOnly: true },
 ];
 
 export default function Sidebar() {
@@ -57,26 +57,28 @@ export default function Sidebar() {
       {/* Navigation */}
       <nav className="flex-1 p-3 flex flex-col">
         <div className="space-y-1">
-          {nav.map(({ href, label, icon: Icon }) => {
-            const active =
-              pathname === href ||
-              pathname.startsWith(href + "/") ||
-              (href === "/overview" && pathname === "/");
-            return (
-              <Link
-                key={href}
-                href={href}
-                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-                  active
-                    ? "bg-orange-50 text-orange-700 font-medium"
-                    : "text-gray-600 hover:bg-gray-100"
-                }`}
-              >
-                <Icon size={16} />
-                {label}
-              </Link>
-            );
-          })}
+          {nav
+            .filter(({ adminOnly }) => !adminOnly || user?.role === "admin")
+            .map(({ href, label, icon: Icon }) => {
+              const active =
+                pathname === href ||
+                pathname.startsWith(href + "/") ||
+                (href === "/overview" && pathname === "/");
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+                    active
+                      ? "bg-orange-50 text-orange-700 font-medium"
+                      : "text-gray-600 hover:bg-gray-100"
+                  }`}
+                >
+                  <Icon size={16} />
+                  {label}
+                </Link>
+              );
+            })}
 
           {/* Správa používateľov — len admin */}
           {user?.role === "admin" && (
