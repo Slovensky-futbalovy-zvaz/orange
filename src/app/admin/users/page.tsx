@@ -424,7 +424,10 @@ export default function AdminUsersPage() {
                     {u.role === "admin" ? (
                       <span className="text-gray-400">Všetky</span>
                     ) : u.companies.length > 0 ? (
-                      u.companies.join(", ")
+                      companies
+                        .filter((c) => u.companies.includes(c.cn))
+                        .map((c) => c.companyName)
+                        .join(", ") || u.companies.join(", ")
                     ) : (
                       <span className="text-gray-300">—</span>
                     )}
