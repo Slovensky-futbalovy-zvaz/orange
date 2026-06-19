@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { seedAdmin } from "@/lib/seed";
 
 const MONGODB_URI = process.env.MONGODB_URI!;
 
@@ -9,6 +10,7 @@ if (!MONGODB_URI) {
 interface MongooseCache {
   conn: typeof mongoose | null;
   promise: Promise<typeof mongoose> | null;
+  seeded: boolean;
 }
 
 declare global {
@@ -16,7 +18,7 @@ declare global {
   var mongooseCache: MongooseCache;
 }
 
-const cached: MongooseCache = global.mongooseCache ?? { conn: null, promise: null };
+const cached: MongooseCache = global.mongooseCache ?? { conn: null, promise: null, seeded: false };
 global.mongooseCache = cached;
 
 export async function connectDB() {
@@ -25,5 +27,13 @@ export async function connectDB() {
     cached.promise = mongoose.connect(MONGODB_URI, { bufferCommands: false });
   }
   cached.conn = await cached.promise;
+
+  if (!cached.seeded) {
+    cached.seeded = true;
+    await seedAdmin().catch((err) =>
+      console.error("[seed] Chyba pri vytváraní primárneho správcu:", err)
+    );
+  }
+
   return cached.conn;
 }

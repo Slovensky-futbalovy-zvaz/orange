@@ -5,8 +5,8 @@ import { jwtVerify } from "jose";
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET!);
 const AUTH_COOKIE = "ov_auth";
 
-// Cesty dostupné bez prihlásenia
-const PUBLIC_PATHS = [
+// Cesty prístupné bez prihlásenia (prefix match)
+const PUBLIC_PREFIXES = [
   "/login",
   "/api/auth/setup",
   "/api/auth/login",
@@ -17,9 +17,10 @@ const PUBLIC_PATHS = [
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Povolíme statické súbory a verejné cesty
+  // Povolíme root landing page (exact match), statické súbory a verejné cesty
   if (
-    PUBLIC_PATHS.some((p) => pathname.startsWith(p)) ||
+    pathname === "/" ||
+    PUBLIC_PREFIXES.some((p) => pathname.startsWith(p)) ||
     pathname.startsWith("/_next") ||
     pathname === "/favicon.ico"
   ) {
