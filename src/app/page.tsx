@@ -24,14 +24,19 @@ export default async function RootPage() {
   const cookieStore = cookies();
   const token = cookieStore.get(AUTH_COOKIE)?.value;
 
+  let loggedIn = false;
   if (token) {
     try {
       await jwtVerify(token, JWT_SECRET);
-      redirect("/overview");
+      loggedIn = true;
     } catch {
       // neplatný token — zobraz landing
+      loggedIn = false;
     }
   }
+  // redirect() musí byť MIMO try/catch — interne hádže NEXT_REDIRECT,
+  // ktorý by catch zhltol a landing by sa zobrazil aj prihlásenému.
+  if (loggedIn) redirect("/overview");
 
   return (
     <div className="min-h-screen bg-gray-50">
