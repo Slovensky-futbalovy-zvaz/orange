@@ -1,9 +1,30 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { Signal, Mail, User, Loader2, CheckCircle, AlertCircle, Settings } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 
 type Mode = "login" | "setup";
+
+// useSearchParams musí byť v Suspense boundary — extrahujeme do samostatného komponentu
+function UrlErrorBanner() {
+  const searchParams = useSearchParams();
+  const urlError = searchParams.get("error");
+
+  const errorMessages: Record<string, string> = {
+    invalid: "Neplatný prihlasovací odkaz.",
+    expired: "Prihlasovací odkaz vypršal. Požiadajte o nový.",
+    server: "Chyba servera. Skúste znova.",
+  };
+
+  if (!urlError || !errorMessages[urlError]) return null;
+
+  return (
+    <div className="flex items-center gap-2 mb-4 p-3 bg-red-50 border border-red-100 rounded-lg text-sm text-red-700">
+      <AlertCircle size={15} className="flex-shrink-0" />
+      {errorMessages[urlError]}
+    </div>
+  );
+}
 
 export default function LoginPage() {
   const [mode, setMode] = useState<Mode>("login");
@@ -17,9 +38,6 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-
-  const searchParams = useSearchParams();
-  const urlError = searchParams.get("error");
 
   useEffect(() => {
     fetch("/api/auth/setup")
@@ -77,12 +95,6 @@ export default function LoginPage() {
       setSubmitting(false);
     }
   }
-
-  const errorMessages: Record<string, string> = {
-    invalid: "Neplatný prihlasovací odkaz.",
-    expired: "Prihlasovací odkaz vypršal. Požiadajte o nový.",
-    server: "Chyba servera. Skúste znova.",
-  };
 
   if (loading) {
     return (
@@ -168,13 +180,10 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Chybová správa z URL */}
-        {urlError && errorMessages[urlError] && (
-          <div className="flex items-center gap-2 mb-4 p-3 bg-red-50 border border-red-100 rounded-lg text-sm text-red-700">
-            <AlertCircle size={15} className="flex-shrink-0" />
-            {errorMessages[urlError]}
-          </div>
-        )}
+        {/* Chybová správa z URL — v Suspense boundary */}
+        <Suspense fallback={null}>
+          <UrlErrorBanner />
+        </Suspense>
 
         {sent ? (
           /* Potvrdenie odoslania */
