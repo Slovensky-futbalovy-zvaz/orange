@@ -36,21 +36,15 @@ export default function Sidebar() {
           </div>
           <div className="font-semibold text-sm text-gray-900 leading-tight">Orange Fakturácia</div>
         </div>
-        {/* Company switcher — pri 1 spoločnosti len statický label */}
-        {companies.length === 1 ? (
-          <div className="px-3 py-2 text-sm text-gray-700 bg-gray-50 border border-gray-200 rounded-lg truncate">
-            {companies[0].companyName}
-          </div>
-        ) : (
-          <CustomSelect
-            value={selectedCn}
-            onChange={setSelectedCn}
-            options={[
-              { value: "", label: "Všetky spoločnosti" },
-              ...companies.map((c) => ({ value: c.cn, label: c.companyName })),
-            ]}
-          />
-        )}
+        {/* Company switcher */}
+        <CustomSelect
+          value={selectedCn}
+          onChange={setSelectedCn}
+          options={[
+            { value: "", label: "Všetky spoločnosti" },
+            ...companies.map((c) => ({ value: c.cn, label: c.companyName })),
+          ]}
+        />
       </div>
 
       {/* Navigation */}
