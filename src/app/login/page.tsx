@@ -100,8 +100,8 @@ export default function LoginPage() {
             <Signal size={18} className="text-white" />
           </div>
           <div>
-            <div className="font-semibold text-gray-900 text-sm leading-tight">Orange Výpisy</div>
-            <div className="text-xs text-gray-400">Slovenský futbalový zväz</div>
+            <div className="font-semibold text-gray-900 text-sm leading-tight">Orange Fakturácia</div>
+            <div className="text-xs text-gray-400">Prehľad fakturácie mobilných služieb</div>
           </div>
         </div>
 
@@ -134,7 +134,7 @@ export default function LoginPage() {
               Nastavenie správcu
             </h1>
             <p className="text-sm text-gray-500 mb-6">
-              Vytvorte prvé správcovské konto pre Orange Výpisy.
+              Vytvorte prvé správcovské konto pre Orange Fakturácia.
             </p>
             <form onSubmit={handleSetup} className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
@@ -179,7 +179,7 @@ export default function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    placeholder="spravca@sfz.sk"
+                    placeholder="spravca@domena.sk"
                     className="w-full pl-8 pr-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300"
                   />
                 </div>
@@ -223,7 +223,7 @@ export default function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    placeholder="vas.email@sfz.sk"
+                    placeholder="vas.email@domena.sk"
                     autoFocus
                     className="w-full pl-8 pr-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300"
                   />

@@ -1,7 +1,7 @@
 const ECOMAIL_API_URL = "https://api2.ecomail.cz/transaction-messages";
 const ECOMAIL_API_KEY = process.env.ECOMAIL_API_KEY!;
-const FROM_EMAIL = process.env.FROM_EMAIL || "noreply@sfz.sk";
-const FROM_NAME = process.env.FROM_NAME || "Orange Výpisy — SFZ";
+const FROM_EMAIL = process.env.FROM_EMAIL || "noreply@domena.sk";
+const FROM_NAME = process.env.FROM_NAME || "Orange Fakturácia";
 const APP_URL = process.env.APP_URL || "http://localhost:3000";
 
 async function sendEmail(
@@ -51,7 +51,7 @@ export async function sendMagicLink(
         <div style="width:32px; height:32px; background:#f97316; border-radius:8px; display:flex; align-items:center; justify-content:center;">
           <span style="color:#fff; font-size:16px; font-weight:bold;">O</span>
         </div>
-        <span style="font-weight:600; font-size:15px; color:#111;">Orange Výpisy — SFZ</span>
+        <span style="font-weight:600; font-size:15px; color:#111;">Orange Fakturácia</span>
       </div>
       <h2 style="color:#111; font-size:20px; margin-bottom:8px;">Prihlásenie do systému</h2>
       <p style="color:#555; font-size:15px; line-height:1.5;">Ahoj <strong>${firstName}</strong>,<br>
@@ -67,7 +67,7 @@ export async function sendMagicLink(
       </p>
     </div>`;
 
-  return sendEmail(toEmail, firstName, "Prihlásenie do Orange Výpisy", html);
+  return sendEmail(toEmail, firstName, "Prihlásenie do Orange Fakturácia", html);
 }
 
 /** Pošle aktivačný link prvému správcovi */
@@ -83,7 +83,7 @@ export async function sendAdminActivation(
         <div style="width:32px; height:32px; background:#f97316; border-radius:8px; display:flex; align-items:center; justify-content:center;">
           <span style="color:#fff; font-size:16px; font-weight:bold;">O</span>
         </div>
-        <span style="font-weight:600; font-size:15px; color:#111;">Orange Výpisy — SFZ</span>
+        <span style="font-weight:600; font-size:15px; color:#111;">Orange Fakturácia</span>
       </div>
       <h2 style="color:#111; font-size:20px; margin-bottom:8px;">Aktivácia správcovského konta</h2>
       <p style="color:#555; font-size:15px; line-height:1.5;">Ahoj <strong>${firstName}</strong>,<br>
@@ -102,7 +102,7 @@ export async function sendAdminActivation(
   return sendEmail(
     toEmail,
     firstName,
-    "Aktivácia správcovského konta — Orange Výpisy",
+    "Aktivácia správcovského konta — Orange Fakturácia",
     html
   );
 }
@@ -126,11 +126,11 @@ export async function sendInvitation(
         <div style="width:32px; height:32px; background:#f97316; border-radius:8px; display:flex; align-items:center; justify-content:center;">
           <span style="color:#fff; font-size:16px; font-weight:bold;">O</span>
         </div>
-        <span style="font-weight:600; font-size:15px; color:#111;">Orange Výpisy — SFZ</span>
+        <span style="font-weight:600; font-size:15px; color:#111;">Orange Fakturácia</span>
       </div>
-      <h2 style="color:#111; font-size:20px; margin-bottom:8px;">Pozvánka do systému Orange Výpisy</h2>
+      <h2 style="color:#111; font-size:20px; margin-bottom:8px;">Pozvánka do systému Orange Fakturácia</h2>
       <p style="color:#555; font-size:15px; line-height:1.5;">Ahoj <strong>${firstName}</strong>,<br>
-      <strong>${inviterName}</strong> Vás pozýva do systému Orange Výpisy SFZ.
+      <strong>${inviterName}</strong> Vás pozýva do systému Orange Fakturácia.
       ${companiesText}<br><br>
       Kliknite na tlačidlo nižšie pre aktiváciu konta. Odkaz je platný <strong>7 dní</strong>.</p>
       <a href="${link}"
@@ -146,7 +146,7 @@ export async function sendInvitation(
   return sendEmail(
     toEmail,
     firstName,
-    `Pozvánka do Orange Výpisy od ${inviterName}`,
+    `Pozvánka do Orange Fakturácia od ${inviterName}`,
     html
   );
 }

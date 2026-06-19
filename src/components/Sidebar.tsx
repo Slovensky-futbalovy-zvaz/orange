@@ -33,7 +33,7 @@ export default function Sidebar() {
           <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center flex-shrink-0">
             <Signal size={16} className="text-white" />
           </div>
-          <div className="font-semibold text-sm text-gray-900 leading-tight">Orange Výpisy</div>
+          <div className="font-semibold text-sm text-gray-900 leading-tight">Orange Fakturácia</div>
         </div>
         {/* Company switcher */}
         <div className="relative">

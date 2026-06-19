@@ -7,8 +7,8 @@ import { Providers } from "@/components/Providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Orange Výpisy — SFZ",
-  description: "Správa mesačných výpisov Orange, nadlimitov a fakturácie",
+  title: "Orange Fakturácia",
+  description: "Prehľad fakturácie a výpisov mobilných služieb",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
