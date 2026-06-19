@@ -60,7 +60,7 @@ export async function GET(req: NextRequest) {
         celkovaFirma: { $sum: "$celkovaFirma" },
       },
     },
-    { $sort: { invoiceYear: -1, invoiceMonth: -1 } },
+    { $sort: { invoiceYear: -1 as const, invoiceMonth: -1 as const } },
     ...(year ? [] : [{ $limit: 12 }]),
   ];
 
