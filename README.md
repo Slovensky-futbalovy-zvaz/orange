@@ -19,8 +19,51 @@ Projekt bol vyvinutý v spolupráci so **Slovenským futbalovým zväzom (SFZ)**
 - **Frontend/Backend:** Next.js 14 (App Router, TypeScript)
 - **Databáza:** MongoDB (Mongoose)
 - **Auth:** Passwordless (magic link), JWT v httpOnly cookie, Ecomail.cz na emaily
-- **UI:** Tailwind CSS, Recharts, Lucide
+- **UI:** Tailwind CSS, Recharts, Lucide, CSS custom properties
+- **Fonty:** Manrope (400–800) + Instrument Serif — via `next/font/google`
 - **Deployment:** Vercel
+
+## Design systém
+
+Aplikácia používa CSS design tokeny — všetky farby sú definované ako `var(--token)` na `<html>` elemente, bez hardcoded hex hodnôt v komponentoch.
+
+### Témy
+
+Téma sa prepína atribútom `data-dir` na `<html>`:
+
+| Hodnota | Téma | Farba akcentu |
+|---|---|---|
+| `d` | Orange (predvolená) | `#ff7900` |
+| `a` | Atrament | `#4f46e5` |
+| `b` | Hĺbka | `#0d9488` |
+| `c` | Grafit | `#1c1917` |
+
+### Tokeny
+
+| Token | Použitie |
+|---|---|
+| `--accent` | Primárna farba akcentu |
+| `--accent-soft` | Svetlé pozadie akcentu (ikony, badges) |
+| `--accent-ink` | Text na `--accent-soft` pozadí |
+| `--paper` | Hlavné pozadie stránky |
+| `--surface` | Karty, modály, panely |
+| `--ink` | Primárny text |
+| `--muted` | Sekundárny text |
+| `--faint` | Terciárny text, placeholdery |
+| `--line` | Oddeľovače, borders |
+| `--side-bg` | Sidebar pozadie |
+| `--side-fg` | Sidebar text |
+| `--side-active-bg` | Aktívna položka v sidebar |
+| `--side-active-fg` | Text aktívnej položky |
+| `--danger` | Chybové stavy, nadlimity |
+| `--radius` | Zaoblenie kariet |
+
+### React Contexts
+
+- **`ThemeContext`** — aktuálna téma (`theme`, `setTheme`), `THEMES` array s hex hodnotami pre Recharts
+- **`PeriodContext`** — globálny výber obdobia (`year`, `monthFrom`, `monthTo`, `periodLabel`, `availableYears`)
+- **`CompanyContext`** — vybraná spoločnosť (`selectedCn`, `companies`)
+- **`AuthContext`** — prihlásený používateľ, rola, logout
 
 ## Lokálne spustenie
 

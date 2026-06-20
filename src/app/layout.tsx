@@ -20,15 +20,27 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "Orange Fakturácia",
+  metadataBase: new URL(process.env.APP_URL ?? "https://orange.futbalsfz.sk"),
+  title: {
+    default: "Orange Fakturácia",
+    template: "%s — Orange Fakturácia",
+  },
   description: "Centralizovaný prehľad mesačných nákladov Orange — podľa spoločností, osôb aj služieb, s automatickým výpočtom nadlimitov.",
   openGraph: {
-    title: "Orange Fakturácia — fakturácia mobilných služieb prehľadne",
+    title: "Orange Fakturácia — mobilné služby prehľadne",
     description: "Centralizovaný prehľad mesačných nákladov Orange — podľa spoločností, osôb aj služieb, s automatickým výpočtom nadlimitov.",
     type: "website",
+    siteName: "Orange Fakturácia",
+    locale: "sk_SK",
   },
   twitter: {
     card: "summary_large_image",
+    title: "Orange Fakturácia",
+    description: "Centralizovaný prehľad mesačných nákladov Orange — podľa spoločností, osôb aj služieb.",
+  },
+  robots: {
+    index: false,
+    follow: false,
   },
 };
 
