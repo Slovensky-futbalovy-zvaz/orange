@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useCompany } from "@/contexts/CompanyContext";
+import { formatEur } from "@/lib/format";
 
 interface MonthEntry {
   cn: string;
@@ -82,13 +83,13 @@ export default function ReportIndexPage() {
                     </span>
                   </div>
                   <div className="text-xs text-gray-400 mt-0.5">
-                    {m.pocetCisel} čísel · Celkom {m.celkovaNaklady.toFixed(2)} €
+                    {m.pocetCisel} čísel · Celkom {formatEur(m.celkovaNaklady)}
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   {m.pocetNadlimitov > 0 && (
                     <span className="text-xs bg-red-100 text-red-700 font-medium px-2 py-1 rounded-full">
-                      {m.pocetNadlimitov} nadlimitov · {m.sumaNadlimitov.toFixed(2)} €
+                      {m.pocetNadlimitov} nadlimitov · {formatEur(m.sumaNadlimitov)}
                     </span>
                   )}
                   <ArrowRight size={16} className="text-gray-300 group-hover:text-orange-500" />

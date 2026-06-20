@@ -10,6 +10,7 @@ import { SelectField } from "@/components/SelectField";
 import { useCompany } from "@/contexts/CompanyContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCodebook } from "@/hooks/useCodebook";
+import { formatEur } from "@/lib/format";
 
 // ─── Interfaces ────────────────────────────────────────────────────────────
 
@@ -445,10 +446,10 @@ export default function OverTheLimitPage() {
         <div className="w-full sm:w-auto sm:ml-auto flex flex-wrap items-center gap-2">
           {summary && !loading && (
             <span className="text-xs" style={{ color: "var(--faint)" }}>
-              {summary.pocetCisel} čísel · {summary.celkovaNaklady?.toFixed(2)} €
+              {summary.pocetCisel} čísel · {summary.celkovaNaklady != null ? formatEur(summary.celkovaNaklady) : "—"}
               {summary.pocetNadlimitov > 0 && (
                 <span className="font-medium ml-1" style={{ color: "var(--danger)" }}>
-                  · {summary.pocetNadlimitov} nadlimitov ({summary.sumaNadlimitov?.toFixed(2)} €)
+                  · {summary.pocetNadlimitov} nadlimitov ({summary.sumaNadlimitov != null ? formatEur(summary.sumaNadlimitov) : "—"})
                 </span>
               )}
             </span>
@@ -700,7 +701,7 @@ export default function OverTheLimitPage() {
                       {inv.monthlyServiceLimit != null ? `${inv.monthlyServiceLimit} €` : "—"}
                     </td>
                     <td className="px-4 py-3 text-right font-medium" style={{ color: "var(--ink)" }}>
-                      {inv.celkovaCena.toFixed(2)} €
+                      {formatEur(inv.celkovaCena)}
                     </td>
                     <td className="px-4 py-3 text-right">
                       {inv.overTheLimit > 0 ? (
@@ -709,7 +710,7 @@ export default function OverTheLimitPage() {
                           style={{ color: "var(--danger)" }}
                         >
                           <AlertTriangle size={12} />
-                          {inv.overTheLimit.toFixed(2)} €
+                          {formatEur(inv.overTheLimit)}
                         </span>
                       ) : (
                         <span style={{ color: "var(--line)" }}>—</span>
@@ -734,7 +735,7 @@ export default function OverTheLimitPage() {
                                 className="font-mono"
                                 style={{ color: d.priceWithoutVat < 0 ? "#16a34a" : "var(--muted)" }}
                               >
-                                {d.priceWithoutVat.toFixed(4)} €
+                                {new Intl.NumberFormat("sk-SK", { minimumFractionDigits: 4, maximumFractionDigits: 4 }).format(d.priceWithoutVat)} €
                               </span>
                             </div>
                           ))}

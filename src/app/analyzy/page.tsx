@@ -8,6 +8,7 @@ import {
 import { Phone, Euro, AlertTriangle, TrendingUp } from "lucide-react";
 import { CustomSelect } from "@/components/CustomSelect";
 import { useCompany } from "@/contexts/CompanyContext";
+import { formatEur } from "@/lib/format";
 
 const MONTH_NAMES = [
   "", "Jan", "Feb", "Mar", "Apr", "Máj", "Jún",
@@ -245,7 +246,7 @@ export default function AnalyzyPage() {
           />
           <KpiCard
             title="Celkové náklady"
-            value={`${kpiStats.celkovaNaklady.toFixed(2)} €`}
+            value={formatEur(kpiStats.celkovaNaklady)}
             icon={<Euro size={18} />}
             color="gray"
             subtitle="bez DPH"
@@ -259,7 +260,7 @@ export default function AnalyzyPage() {
           />
           <KpiCard
             title="Suma nadlimitov"
-            value={`${kpiStats.sumaNadlimitov.toFixed(2)} €`}
+            value={formatEur(kpiStats.sumaNadlimitov)}
             icon={<TrendingUp size={18} />}
             color="orange"
             subtitle="bez DPH"
@@ -283,7 +284,7 @@ export default function AnalyzyPage() {
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                   <XAxis dataKey="mesiac" tick={{ fontSize: 12 }} />
                   <YAxis tick={{ fontSize: 12 }} unit=" €" />
-                  <Tooltip formatter={(v: number) => `${v.toFixed(2)} €`} />
+                  <Tooltip formatter={(v: number) => formatEur(v)} />
                   <Legend />
                   <Bar dataKey="Zamestnanci (€)" stackId="a" fill="#6366f1" radius={[0, 0, 0, 0]} />
                   <Bar dataKey="Firemné (€)" stackId="a" fill="#f59e0b" radius={[4, 4, 0, 0]} />
@@ -304,7 +305,7 @@ export default function AnalyzyPage() {
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                   <XAxis dataKey="mesiac" tick={{ fontSize: 12 }} />
                   <YAxis tick={{ fontSize: 12 }} unit=" €" />
-                  <Tooltip formatter={(v: number) => `${v.toFixed(2)} €`} />
+                  <Tooltip formatter={(v: number) => formatEur(v)} />
                   <Legend />
                   <Line type="monotone" dataKey="Náklady (€)" stroke="#6366f1" strokeWidth={2} dot />
                   <Line type="monotone" dataKey="Nadlimity (€)" stroke="#ef4444" strokeWidth={2} dot />
@@ -325,7 +326,7 @@ export default function AnalyzyPage() {
                   <BarChart data={data.byStredisko} layout="vertical">
                     <XAxis type="number" tick={{ fontSize: 11 }} unit=" €" />
                     <YAxis type="category" dataKey="stredisko" tick={{ fontSize: 11 }} width={60} />
-                    <Tooltip formatter={(v: number) => `${v.toFixed(2)} €`} />
+                    <Tooltip formatter={(v: number) => formatEur(v)} />
                     <Bar dataKey="celkovaCena" fill="#6366f1" radius={[0, 4, 4, 0]} name="Celkom (€)" />
                     <Bar dataKey="nadlimit" fill="#ef4444" radius={[0, 4, 4, 0]} name="Nadlimit (€)" />
                   </BarChart>
@@ -358,7 +359,7 @@ export default function AnalyzyPage() {
                           <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
                         ))}
                       </Pie>
-                      <Tooltip formatter={(v: number) => `${v.toFixed(2)} €`} />
+                      <Tooltip formatter={(v: number) => formatEur(v)} />
                     </PieChart>
                   </ResponsiveContainer>
                   <div className="flex-1 space-y-1.5 text-xs">
@@ -369,7 +370,7 @@ export default function AnalyzyPage() {
                           style={{ background: PIE_COLORS[i % PIE_COLORS.length] }}
                         />
                         <span className="text-gray-600 truncate flex-1">{s.entryName}</span>
-                        <span className="font-medium text-gray-900 tabular-nums">{s.suma.toFixed(2)} €</span>
+                        <span className="font-medium text-gray-900 tabular-nums">{formatEur(s.suma)}</span>
                       </div>
                     ))}
                   </div>
@@ -393,10 +394,10 @@ export default function AnalyzyPage() {
                         {p._id.personName || "Nespárované"}
                       </span>
                       <span className="text-xs text-gray-400 ml-2">
-                        {p.pocetMesiacov}× prekročil · ø {p.avgNadlimit.toFixed(2)} €
+                        {p.pocetMesiacov}× prekročil · ø {formatEur(p.avgNadlimit)}
                       </span>
                     </div>
-                    <span className="text-red-600 font-semibold">{p.sumaNadlimitov.toFixed(2)} €</span>
+                    <span className="text-red-600 font-semibold">{formatEur(p.sumaNadlimitov)}</span>
                   </div>
                 ))}
               </div>
@@ -422,10 +423,10 @@ export default function AnalyzyPage() {
                   {data!.byStredisko.map((s) => (
                     <tr key={s.stredisko} className="hover:bg-gray-50">
                       <td className="px-4 py-3 font-medium">{s.stredisko || <span className="text-gray-400 italic">Bez strediska</span>}</td>
-                      <td className="px-4 py-3 text-right">{s.celkovaCena.toFixed(2)} €</td>
+                      <td className="px-4 py-3 text-right">{formatEur(s.celkovaCena)}</td>
                       <td className="px-4 py-3 text-right">
                         {s.nadlimit > 0 ? (
-                          <span className="text-red-600 font-medium">{s.nadlimit.toFixed(2)} €</span>
+                          <span className="text-red-600 font-medium">{formatEur(s.nadlimit)}</span>
                         ) : (
                           <span className="text-gray-300">—</span>
                         )}

@@ -9,6 +9,7 @@ import { Phone, Euro, AlertTriangle, TrendingUp } from "lucide-react";
 import { useCompany } from "@/contexts/CompanyContext";
 import { usePeriod } from "@/contexts/PeriodContext";
 import { useTheme, THEMES } from "@/contexts/ThemeContext";
+import { formatEur } from "@/lib/format";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -171,7 +172,7 @@ export default function AnalyzyPage() {
           />
           <KpiCard
             title="Celkové náklady"
-            value={`${kpiStats.celkovaNaklady.toFixed(2)} €`}
+            value={formatEur(kpiStats.celkovaNaklady)}
             icon={<Euro size={16} />}
             variant="neutral"
             subtitle="bez DPH"
@@ -185,7 +186,7 @@ export default function AnalyzyPage() {
           />
           <KpiCard
             title="Suma nadlimitov"
-            value={`${kpiStats.sumaNadlimitov.toFixed(2)} €`}
+            value={formatEur(kpiStats.sumaNadlimitov)}
             icon={<TrendingUp size={16} />}
             variant="danger"
             subtitle="bez DPH"
@@ -212,7 +213,7 @@ export default function AnalyzyPage() {
                   <XAxis dataKey="mesiac" tick={{ fontSize: 12, fill: "var(--muted)" }} />
                   <YAxis tick={{ fontSize: 12, fill: "var(--muted)" }} unit=" €" />
                   <Tooltip
-                    formatter={(v: number) => `${v.toFixed(2)} €`}
+                    formatter={(v: number) => formatEur(v)}
                     contentStyle={{
                       background: "var(--surface)",
                       border: "1px solid var(--line)",
@@ -240,7 +241,7 @@ export default function AnalyzyPage() {
                   <XAxis dataKey="mesiac" tick={{ fontSize: 12, fill: "var(--muted)" }} />
                   <YAxis tick={{ fontSize: 12, fill: "var(--muted)" }} unit=" €" />
                   <Tooltip
-                    formatter={(v: number) => `${v.toFixed(2)} €`}
+                    formatter={(v: number) => formatEur(v)}
                     contentStyle={{
                       background: "var(--surface)",
                       border: "1px solid var(--line)",
@@ -281,7 +282,7 @@ export default function AnalyzyPage() {
                       width={180}
                     />
                     <Tooltip
-                      formatter={(v: number) => `${v.toFixed(2)} €`}
+                      formatter={(v: number) => formatEur(v)}
                       contentStyle={{
                         background: "var(--surface)",
                         border: "1px solid var(--line)",
@@ -320,7 +321,7 @@ export default function AnalyzyPage() {
                           ))}
                         </Pie>
                         <Tooltip
-                          formatter={(v: number) => `${v.toFixed(2)} €`}
+                          formatter={(v: number) => formatEur(v)}
                           contentStyle={{
                             background: "var(--surface)",
                             border: "1px solid var(--line)",
@@ -345,7 +346,7 @@ export default function AnalyzyPage() {
                           className="font-semibold tabular-nums"
                           style={{ color: "var(--ink)" }}
                         >
-                          {s.suma.toFixed(2)} €
+                          {formatEur(s.suma)}
                         </span>
                       </div>
                     ))}
@@ -373,11 +374,11 @@ export default function AnalyzyPage() {
                         {p._id.personName || "Nespárované"}
                       </span>
                       <span className="text-xs ml-2" style={{ color: "var(--faint)" }}>
-                        {p.pocetMesiacov}× prekročil · ø {p.avgNadlimit.toFixed(2)} €
+                        {p.pocetMesiacov}× prekročil · ø {formatEur(p.avgNadlimit)}
                       </span>
                     </div>
                     <span className="font-semibold tabular-nums" style={{ color: "var(--danger)" }}>
-                      {p.sumaNadlimitov.toFixed(2)} €
+                      {formatEur(p.sumaNadlimitov)}
                     </span>
                   </div>
                 ))}
@@ -442,12 +443,12 @@ export default function AnalyzyPage() {
                           className="px-4 py-3 text-right tabular-nums"
                           style={{ color: "var(--muted)" }}
                         >
-                          {s.celkovaCena.toFixed(2)} €
+                          {formatEur(s.celkovaCena)}
                         </td>
                         <td className="px-4 py-3 text-right tabular-nums">
                           {s.nadlimit > 0 ? (
                             <span className="font-semibold" style={{ color: "var(--danger)" }}>
-                              {s.nadlimit.toFixed(2)} €
+                              {formatEur(s.nadlimit)}
                             </span>
                           ) : (
                             <span style={{ color: "var(--faint)" }}>—</span>

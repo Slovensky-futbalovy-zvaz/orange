@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ChevronDown, ChevronUp, Layers } from "lucide-react";
+import { formatEur } from "@/lib/format";
 
 interface Detail {
   entryName: string;
@@ -69,7 +70,7 @@ export default function ServiceDetailPage({ params }: { params: { month: string 
         </div>
         {data.items.length > 0 && (
           <div className="text-right">
-            <div className="text-2xl font-bold text-gray-900">{data.total.toFixed(2)} €</div>
+            <div className="text-2xl font-bold text-gray-900">{formatEur(data.total)}</div>
             <div className="text-xs text-gray-400 mt-0.5">celkom bez DPH</div>
           </div>
         )}
@@ -88,7 +89,7 @@ export default function ServiceDetailPage({ params }: { params: { month: string 
               Štandardné firemné služby (MAIN-CONS)
             </div>
             <div className="text-xl font-bold text-orange-800">
-              {data.total.toFixed(2)} €
+              {formatEur(data.total)}
             </div>
             <div className="text-xs text-orange-500 mt-0.5">
               {data.items.length} záznamov · bez DPH
@@ -101,7 +102,7 @@ export default function ServiceDetailPage({ params }: { params: { month: string 
               <span className="font-semibold text-sm text-orange-800">
                 MAIN-CONS · {data.items.length} záznamov
               </span>
-              <span className="font-bold text-sm text-orange-800">{data.total.toFixed(2)} €</span>
+              <span className="font-bold text-sm text-orange-800">{formatEur(data.total)}</span>
             </div>
             <table className="w-full text-sm">
               <thead>
@@ -125,7 +126,7 @@ export default function ServiceDetailPage({ params }: { params: { month: string 
                         )}
                       </td>
                       <td className="px-4 py-3 text-right font-medium text-gray-900">
-                        {item.celkovaCena.toFixed(2)} €
+                        {formatEur(item.celkovaCena)}
                       </td>
                       <td className="px-4 py-3 text-gray-400">
                         {item.details.length > 0 && (
@@ -150,7 +151,7 @@ export default function ServiceDetailPage({ params }: { params: { month: string 
                                     d.priceWithoutVat < 0 ? "text-green-600" : "text-gray-700"
                                   }`}
                                 >
-                                  {d.priceWithoutVat.toFixed(4)} €
+                                  {new Intl.NumberFormat("sk-SK", { minimumFractionDigits: 4, maximumFractionDigits: 4 }).format(d.priceWithoutVat)} €
                                 </span>
                               </div>
                             ))}

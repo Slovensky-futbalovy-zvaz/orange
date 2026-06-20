@@ -3,6 +3,7 @@ import { useEffect, useState, useMemo } from "react";
 import { Download, ChevronDown, ChevronUp, AlertTriangle, ChevronsUpDown, Search, X, UserPlus } from "lucide-react";
 import { SelectField } from "@/components/SelectField";
 import { useCompany } from "@/contexts/CompanyContext";
+import { formatEur } from "@/lib/format";
 
 interface InvoiceDetail {
   entryName: string;
@@ -215,9 +216,9 @@ export default function ReportPage({ params }: { params: { month: string } }) {
           <h1 className="text-2xl font-bold text-gray-900">Report {params.month}</h1>
           {summary && (
             <p className="text-gray-500 text-sm mt-1">
-              {summary.pocetCisel} čísel · {summary.celkovaNaklady?.toFixed(2)} € celkom ·{" "}
+              {summary.pocetCisel} čísel · {summary.celkovaNaklady != null ? formatEur(summary.celkovaNaklady) : "—"} celkom ·{" "}
               <span className="text-red-600 font-medium">
-                {summary.pocetNadlimitov} nadlimitov ({summary.sumaNadlimitov?.toFixed(2)} €)
+                {summary.pocetNadlimitov} nadlimitov ({summary.sumaNadlimitov != null ? formatEur(summary.sumaNadlimitov) : "—"})
               </span>
             </p>
           )}
@@ -353,13 +354,13 @@ export default function ReportPage({ params }: { params: { month: string } }) {
                       {inv.monthlyServiceLimit != null ? `${inv.monthlyServiceLimit} €` : "—"}
                     </td>
                     <td className="px-4 py-3 text-right font-medium text-gray-900">
-                      {inv.celkovaCena.toFixed(2)} €
+                      {formatEur(inv.celkovaCena)}
                     </td>
                     <td className="px-4 py-3 text-right">
                       {inv.overTheLimit > 0 ? (
                         <span className="inline-flex items-center gap-1 font-semibold text-red-600">
                           <AlertTriangle size={12} />
-                          {inv.overTheLimit.toFixed(2)} €
+                          {formatEur(inv.overTheLimit)}
                         </span>
                       ) : (
                         <span className="text-gray-300">—</span>
@@ -377,7 +378,7 @@ export default function ReportPage({ params }: { params: { month: string } }) {
                             <div key={i} className="flex justify-between">
                               <span>{d.entryName}</span>
                               <span className={`font-mono ${d.priceWithoutVat < 0 ? "text-green-600" : "text-gray-700"}`}>
-                                {d.priceWithoutVat.toFixed(4)} €
+                                {new Intl.NumberFormat("sk-SK", { minimumFractionDigits: 4, maximumFractionDigits: 4 }).format(d.priceWithoutVat)} €
                               </span>
                             </div>
                           ))}

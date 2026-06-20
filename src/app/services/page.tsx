@@ -10,6 +10,7 @@ import { Layers, Euro, ArrowRight } from "lucide-react";
 import { useCompany } from "@/contexts/CompanyContext";
 import { usePeriod } from "@/contexts/PeriodContext";
 import { useTheme, THEMES } from "@/contexts/ThemeContext";
+import { formatEur } from "@/lib/format";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -140,7 +141,7 @@ export default function ServicesPage() {
               <Euro size={18} />
             </div>
             <div className="font-serif text-2xl tabular-nums leading-none mb-0.5" style={{ color: "var(--ink)" }}>
-              {data.summary.total.toFixed(2)} €
+              {formatEur(data.summary.total)}
             </div>
             <div className="text-xs" style={{ color: "var(--muted)" }}>
               Celková suma štandardných služieb
@@ -193,7 +194,7 @@ export default function ServicesPage() {
                   <XAxis dataKey="mesiac" tick={{ fontSize: 12, fill: "var(--muted)" }} />
                   <YAxis tick={{ fontSize: 12, fill: "var(--muted)" }} unit=" €" />
                   <Tooltip
-                    formatter={(v: number) => `${v.toFixed(2)} €`}
+                    formatter={(v: number) => formatEur(v)}
                     contentStyle={tooltipStyle}
                   />
                   <Bar dataKey="Služby (€)" fill={accentHex} radius={[4, 4, 0, 0]} />
@@ -229,7 +230,7 @@ export default function ServicesPage() {
                         ))}
                       </Pie>
                       <Tooltip
-                        formatter={(v: number) => `${v.toFixed(2)} €`}
+                        formatter={(v: number) => formatEur(v)}
                         contentStyle={tooltipStyle}
                       />
                     </PieChart>
@@ -249,7 +250,7 @@ export default function ServicesPage() {
                             {s.entryName}
                           </span>
                           <span className="font-semibold tabular-nums flex-shrink-0" style={{ color: "var(--ink)" }}>
-                            {s.suma.toFixed(2)} €
+                            {formatEur(s.suma)}
                           </span>
                           <span className="tabular-nums flex-shrink-0 w-8 text-right" style={{ color: "var(--faint)" }}>
                             {pct}%
@@ -321,7 +322,7 @@ export default function ServicesPage() {
                     </div>
                     <div className="flex items-center gap-3">
                       <span className="font-semibold text-sm" style={{ color: "var(--ink)" }}>
-                        {m.total.toFixed(2)} €
+                        {formatEur(m.total)}
                       </span>
                       <ArrowRight
                         size={15}

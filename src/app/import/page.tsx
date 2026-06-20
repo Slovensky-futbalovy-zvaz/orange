@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { formatEur } from "@/lib/format";
 import { Upload, CheckCircle, AlertCircle, FileUp, RefreshCw, ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
 import Link from "next/link";
 
@@ -125,8 +126,8 @@ export default function ImportPage() {
           <div className="grid grid-cols-2 gap-3 mb-4">
             <Stat label="Počet čísel" value={result.pocetCisel} />
             <Stat label="Nespárované" value={result.nespárovane} warn={result.nespárovane > 0} />
-            <Stat label="Celkové náklady" value={`${result.celkovaNaklady.toFixed(2)} €`} />
-            <Stat label="Suma nadlimitov" value={`${result.sumaNadlimitov.toFixed(2)} €`} warn={result.sumaNadlimitov > 0} />
+            <Stat label="Celkové náklady" value={formatEur(result.celkovaNaklady)} />
+            <Stat label="Suma nadlimitov" value={formatEur(result.sumaNadlimitov)} warn={result.sumaNadlimitov > 0} />
           </div>
           {result.pocetNadlimitov > 0 && (
             <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-3">

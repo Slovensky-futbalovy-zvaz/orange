@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ChevronDown, ChevronUp, Building2 } from "lucide-react";
+import { formatEur } from "@/lib/format";
 
 interface Detail {
   entryName: string;
@@ -61,7 +62,7 @@ function Section({
           {subtitle && <span className="text-xs ml-2 opacity-60">{subtitle}</span>}
           <span className="text-xs ml-2 opacity-70">({items.length} záznamov)</span>
         </div>
-        <span className="font-bold text-sm">{total.toFixed(2)} €</span>
+        <span className="font-bold text-sm">{formatEur(total)}</span>
       </div>
       <table className="w-full text-sm">
         <thead>
@@ -83,7 +84,7 @@ function Section({
                   {item.userName || <span className="italic text-gray-400">Firemná služba (bez čísla)</span>}
                 </td>
                 <td className="px-4 py-3 text-right font-medium text-gray-900">
-                  {item.celkovaCena.toFixed(2)} €
+                  {formatEur(item.celkovaCena)}
                 </td>
                 <td className="px-4 py-3 text-gray-400">
                   {item.details.length > 0 &&
@@ -105,7 +106,7 @@ function Section({
                               d.priceWithoutVat < 0 ? "text-green-600" : "text-gray-700"
                             }`}
                           >
-                            {d.priceWithoutVat.toFixed(4)} €
+                            {new Intl.NumberFormat("sk-SK", { minimumFractionDigits: 4, maximumFractionDigits: 4 }).format(d.priceWithoutVat)} €
                           </span>
                         </div>
                       ))}
@@ -158,7 +159,7 @@ export default function SpolocnostDetailPage({ params }: { params: { month: stri
         </div>
         {!isEmpty && (
           <div className="text-right">
-            <div className="text-2xl font-bold text-gray-900">{data.total.toFixed(2)} €</div>
+            <div className="text-2xl font-bold text-gray-900">{formatEur(data.total)}</div>
             <div className="text-xs text-gray-400 mt-0.5">celkom bez DPH</div>
           </div>
         )}
@@ -181,7 +182,7 @@ export default function SpolocnostDetailPage({ params }: { params: { month: stri
                 Firemné poplatky
               </div>
               <div className="text-xl font-bold text-blue-800">
-                {data.totalAnnex.toFixed(2)} €
+                {formatEur(data.totalAnnex)}
               </div>
               <div className="text-xs text-blue-500 mt-0.5">
                 {data.annex.length} záznamov · bez viazby na číslo
@@ -193,7 +194,7 @@ export default function SpolocnostDetailPage({ params }: { params: { month: stri
                   ANNEX — Zamestnanecké
                 </div>
                 <div className="text-xl font-bold text-purple-800">
-                  {data.totalMainCons.toFixed(2)} €
+                  {formatEur(data.totalMainCons)}
                 </div>
                 <div className="text-xs text-purple-500 mt-0.5">
                   {data.mainCons.length} záznamov · viazané na číslo

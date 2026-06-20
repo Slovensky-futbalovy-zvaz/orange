@@ -10,6 +10,7 @@ import {
 import { Building2, Euro, ArrowRight } from "lucide-react";
 import { useCompany } from "@/contexts/CompanyContext";
 import { CustomSelect } from "@/components/CustomSelect";
+import { formatEur } from "@/lib/format";
 
 const MONTH_NAMES = [
   "", "Jan", "Feb", "Mar", "Apr", "Máj", "Jún",
@@ -209,7 +210,7 @@ export default function SpolocnostPage() {
               <Euro size={18} />
             </div>
             <div className="text-2xl font-bold text-gray-900 tabular-nums">
-              {data.summary.total.toFixed(2)} €
+              {formatEur(data.summary.total)}
             </div>
             <div className="text-xs text-gray-500 mt-0.5">Celková suma firemných poplatkov</div>
             <div className="text-xs text-gray-400">bez DPH · {data.periodLabel}</div>
@@ -240,7 +241,7 @@ export default function SpolocnostPage() {
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                   <XAxis dataKey="mesiac" tick={{ fontSize: 12 }} />
                   <YAxis tick={{ fontSize: 12 }} unit=" €" />
-                  <Tooltip formatter={(v: number) => `${v.toFixed(2)} €`} />
+                  <Tooltip formatter={(v: number) => formatEur(v)} />
                   <Bar dataKey="Poplatky (€)" fill="#6366f1" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -268,7 +269,7 @@ export default function SpolocnostPage() {
                         <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
                       ))}
                     </Pie>
-                    <Tooltip formatter={(v: number) => `${v.toFixed(2)} €`} />
+                    <Tooltip formatter={(v: number) => formatEur(v)} />
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="flex-1 space-y-1.5 text-xs">
@@ -279,7 +280,7 @@ export default function SpolocnostPage() {
                         style={{ background: PIE_COLORS[i % PIE_COLORS.length] }}
                       />
                       <span className="text-gray-600 truncate flex-1">{s.entryName}</span>
-                      <span className="font-medium text-gray-900 tabular-nums">{s.suma.toFixed(2)} €</span>
+                      <span className="font-medium text-gray-900 tabular-nums">{formatEur(s.suma)}</span>
                     </div>
                   ))}
                 </div>
@@ -305,7 +306,7 @@ export default function SpolocnostPage() {
                       <span className="text-xs text-gray-400">{m.count} záznamov</span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className="font-semibold text-gray-900 text-sm">{m.total.toFixed(2)} €</span>
+                      <span className="font-semibold text-gray-900 text-sm">{formatEur(m.total)}</span>
                       <ArrowRight size={15} className="text-gray-300 group-hover:text-blue-500" />
                     </div>
                   </Link>
