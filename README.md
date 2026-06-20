@@ -12,6 +12,7 @@ Projekt bol vyvinutý v spolupráci so **Slovenským futbalovým zväzom (SFZ)**
 - **Report pre ekonomiku** — prehľad nadlimitov s exportom do Excel (`.xlsx`)
 - **Analýzy** — mesačný trend nákladov, náklady po strediskách, opakovaní prekračovatelia
 - **Správa používateľov** — magic link prihlásenie, role správca/používateľ, pridelenie prístupu k spoločnostiam
+- **Mobilná responzivita** — plná podpora mobilných zariadení: hamburger menu, slide-in sidebar, horizontálny scroll tabuliek, pie charty prispôsobené malým obrazovkám
 
 ## Stack
 
