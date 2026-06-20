@@ -19,7 +19,15 @@ function UrlErrorBanner() {
   if (!urlError || !errorMessages[urlError]) return null;
 
   return (
-    <div className="flex items-center gap-2 mb-4 p-3 bg-red-50 border border-red-100 rounded-lg text-sm text-red-700">
+    <div
+      className="flex items-center gap-2 mb-4 p-3 text-sm"
+      style={{
+        background: "color-mix(in srgb, var(--danger) 8%, transparent)",
+        border: "1px solid color-mix(in srgb, var(--danger) 25%, transparent)",
+        color: "var(--danger)",
+        borderRadius: "var(--radius)",
+      }}
+    >
       <AlertCircle size={15} className="flex-shrink-0" />
       {errorMessages[urlError]}
     </div>
@@ -98,67 +106,94 @@ export default function LoginPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Loader2 className="animate-spin text-orange-500" size={32} />
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--paper)" }}>
+        <Loader2 className="animate-spin" size={32} style={{ color: "var(--accent)" }} />
       </div>
     );
   }
 
   if (!fromEmailSet) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-sm border border-orange-200 p-8 w-full max-w-md">
+      <div className="min-h-screen flex items-center justify-center p-4" style={{ background: "var(--paper)" }}>
+        <div
+          className="rounded-2xl shadow-sm p-8 w-full max-w-md"
+          style={{ background: "var(--surface)", border: "1px solid var(--line)" }}
+        >
           <div className="flex items-center gap-2 mb-6">
-            <div className="w-9 h-9 bg-orange-500 rounded-xl flex items-center justify-center flex-shrink-0">
+            <div
+              className="w-9 h-9 flex items-center justify-center flex-shrink-0"
+              style={{ background: "var(--accent)", borderRadius: "var(--radius)" }}
+            >
               <Signal size={18} className="text-white" />
             </div>
             <div>
-              <div className="font-semibold text-gray-900 text-sm leading-tight">Orange Fakturácia</div>
-              <div className="text-xs text-gray-400">Prehľad fakturácie mobilných služieb</div>
+              <div className="font-semibold text-sm leading-tight" style={{ color: "var(--ink)" }}>Orange Fakturácia</div>
+              <div className="text-xs" style={{ color: "var(--faint)" }}>Prehľad fakturácie mobilných služieb</div>
             </div>
           </div>
 
-          <div className="flex items-start gap-3 p-4 bg-orange-50 border border-orange-200 rounded-xl mb-6">
-            <Settings size={18} className="text-orange-500 flex-shrink-0 mt-0.5" />
+          <div
+            className="flex items-start gap-3 p-4 rounded-xl mb-6"
+            style={{ background: "var(--accent-soft)", border: "1px solid color-mix(in srgb, var(--accent) 30%, transparent)" }}
+          >
+            <Settings size={18} className="flex-shrink-0 mt-0.5" style={{ color: "var(--accent)" }} />
             <div>
-              <p className="text-sm font-semibold text-orange-800 mb-1">Chýba konfigurácia</p>
-              <p className="text-sm text-orange-700">
-                Premenná <code className="bg-orange-100 px-1 rounded font-mono text-xs">FROM_EMAIL</code> nie
-                je nastavená. Aplikácia nemôže vytvoriť primárneho správcu ani odosielať emaily.
+              <p className="text-sm font-semibold mb-1" style={{ color: "var(--ink)" }}>Chýba konfigurácia</p>
+              <p className="text-sm" style={{ color: "var(--muted)" }}>
+                Premenná{" "}
+                <code className="px-1 rounded font-mono text-xs" style={{ background: "var(--line)", color: "var(--ink)" }}>
+                  FROM_EMAIL
+                </code>{" "}
+                nie je nastavená. Aplikácia nemôže vytvoriť primárneho správcu ani odosielať emaily.
               </p>
             </div>
           </div>
 
-          <h2 className="text-sm font-semibold text-gray-800 mb-3">Ako to opraviť</h2>
-          <ol className="space-y-3 text-sm text-gray-600">
+          <h2 className="text-sm font-semibold mb-3" style={{ color: "var(--ink)" }}>Ako to opraviť</h2>
+          <ol className="space-y-3 text-sm" style={{ color: "var(--muted)" }}>
             <li className="flex gap-2">
-              <span className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 text-xs font-semibold flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+              <span
+                className="w-5 h-5 rounded-full text-xs font-semibold flex items-center justify-center flex-shrink-0 mt-0.5 text-white"
+                style={{ background: "var(--accent)" }}
+              >1</span>
               <span>
-                Otvorte súbor <code className="bg-gray-100 px-1 rounded font-mono text-xs">.env.local</code> v
-                koreňovom adresári projektu.
+                Otvorte súbor{" "}
+                <code className="px-1 rounded font-mono text-xs" style={{ background: "var(--line)", color: "var(--ink)" }}>
+                  .env.local
+                </code>{" "}
+                v koreňovom adresári projektu.
               </span>
             </li>
             <li className="flex gap-2">
-              <span className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 text-xs font-semibold flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+              <span
+                className="w-5 h-5 rounded-full text-xs font-semibold flex items-center justify-center flex-shrink-0 mt-0.5 text-white"
+                style={{ background: "var(--accent)" }}
+              >2</span>
               <span>
                 Pridajte riadok:
-                <code className="block mt-1 bg-gray-100 px-2 py-1 rounded font-mono text-xs text-gray-800">
+                <code
+                  className="block mt-1 px-2 py-1 rounded font-mono text-xs"
+                  style={{ background: "var(--line)", color: "var(--ink)" }}
+                >
                   FROM_EMAIL=vas.email@domena.sk
                 </code>
               </span>
             </li>
             <li className="flex gap-2">
-              <span className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 text-xs font-semibold flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
+              <span
+                className="w-5 h-5 rounded-full text-xs font-semibold flex items-center justify-center flex-shrink-0 mt-0.5 text-white"
+                style={{ background: "var(--accent)" }}
+              >3</span>
               <span>
-                Na Vercel pridajte túto premennú v <strong>Settings → Environment Variables</strong> a
-                znova nasaďte aplikáciu.
+                Na Vercel pridajte túto premennú v <strong>Settings → Environment Variables</strong> a znova nasaďte aplikáciu.
               </span>
             </li>
             <li className="flex gap-2">
-              <span className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 text-xs font-semibold flex items-center justify-center flex-shrink-0 mt-0.5">4</span>
-              <span>
-                Po reštarte sa konto primárneho správcu vytvorí automaticky a budete sa môcť prihlásiť.
-              </span>
+              <span
+                className="w-5 h-5 rounded-full text-xs font-semibold flex items-center justify-center flex-shrink-0 mt-0.5 text-white"
+                style={{ background: "var(--accent)" }}
+              >4</span>
+              <span>Po reštarte sa konto primárneho správcu vytvorí automaticky a budete sa môcť prihlásiť.</span>
             </li>
           </ol>
         </div>
@@ -167,16 +202,22 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 w-full max-w-sm">
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: "var(--paper)" }}>
+      <div
+        className="rounded-2xl shadow-sm p-8 w-full max-w-sm"
+        style={{ background: "var(--surface)", border: "1px solid var(--line)" }}
+      >
         {/* Logo */}
         <div className="flex items-center gap-2 mb-8">
-          <div className="w-9 h-9 bg-orange-500 rounded-xl flex items-center justify-center flex-shrink-0">
+          <div
+            className="w-9 h-9 flex items-center justify-center flex-shrink-0"
+            style={{ background: "var(--accent)", borderRadius: "var(--radius)" }}
+          >
             <Signal size={18} className="text-white" />
           </div>
           <div>
-            <div className="font-semibold text-gray-900 text-sm leading-tight">Orange Fakturácia</div>
-            <div className="text-xs text-gray-400">Prehľad fakturácie mobilných služieb</div>
+            <div className="font-semibold text-sm leading-tight" style={{ color: "var(--ink)" }}>Orange Fakturácia</div>
+            <div className="text-xs" style={{ color: "var(--faint)" }}>Prehľad fakturácie mobilných služieb</div>
           </div>
         </div>
 
@@ -188,12 +229,12 @@ export default function LoginPage() {
         {sent ? (
           /* Potvrdenie odoslania */
           <div className="text-center py-4">
-            <CheckCircle size={44} className="text-green-500 mx-auto mb-4" />
-            <h2 className="font-semibold text-gray-900 mb-2">
+            <CheckCircle size={44} className="mx-auto mb-4" style={{ color: "var(--accent)" }} />
+            <h2 className="font-semibold mb-2" style={{ color: "var(--ink)" }}>
               {mode === "setup" ? "Skontrolujte email" : "Odkaz bol odoslaný"}
             </h2>
-            <p className="text-sm text-gray-500 leading-relaxed">
-              Poslali sme Vám email na <strong>{email}</strong>.{" "}
+            <p className="text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
+              Poslali sme Vám email na <strong style={{ color: "var(--ink)" }}>{email}</strong>.{" "}
               {mode === "setup"
                 ? "Kliknite na link pre aktiváciu správcovského konta."
                 : "Kliknite na link pre prihlásenie (platný 15 minút)."}
@@ -202,69 +243,82 @@ export default function LoginPage() {
         ) : mode === "setup" ? (
           /* Registrácia prvého správcu */
           <>
-            <h1 className="text-lg font-semibold text-gray-900 mb-1">
+            <h1 className="text-lg font-semibold mb-1" style={{ color: "var(--ink)" }}>
               Nastavenie správcu
             </h1>
-            <p className="text-sm text-gray-500 mb-6">
+            <p className="text-sm mb-6" style={{ color: "var(--muted)" }}>
               Vytvorte prvé správcovské konto pre Orange Fakturácia.
             </p>
             <form onSubmit={handleSetup} className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">
-                    Meno
-                  </label>
+                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--muted)" }}>Meno</label>
                   <div className="relative">
-                    <User size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <User size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "var(--faint)" }} />
                     <input
                       type="text"
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
                       required
                       placeholder="Ján"
-                      className="w-full pl-8 pr-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300"
+                      className="w-full pl-8 pr-3 py-2.5 text-sm focus:outline-none"
+                      style={{
+                        background: "var(--paper)",
+                        border: "1px solid var(--line)",
+                        color: "var(--ink)",
+                        borderRadius: "var(--radius)",
+                      }}
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">
-                    Priezvisko
-                  </label>
+                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--muted)" }}>Priezvisko</label>
                   <input
                     type="text"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     required
                     placeholder="Novák"
-                    className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300"
+                    className="w-full px-3 py-2.5 text-sm focus:outline-none"
+                    style={{
+                      background: "var(--paper)",
+                      border: "1px solid var(--line)",
+                      color: "var(--ink)",
+                      borderRadius: "var(--radius)",
+                    }}
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">
-                  Email
-                </label>
+                <label className="block text-xs font-medium mb-1" style={{ color: "var(--muted)" }}>Email</label>
                 <div className="relative">
-                  <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "var(--faint)" }} />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     placeholder="spravca@domena.sk"
-                    className="w-full pl-8 pr-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300"
+                    className="w-full pl-8 pr-3 py-2.5 text-sm focus:outline-none"
+                    style={{
+                      background: "var(--paper)",
+                      border: "1px solid var(--line)",
+                      color: "var(--ink)",
+                      borderRadius: "var(--radius)",
+                    }}
                   />
                 </div>
               </div>
               {error && (
-                <p className="text-sm text-red-600 flex items-center gap-1">
+                <p className="text-sm flex items-center gap-1" style={{ color: "var(--danger)" }}>
                   <AlertCircle size={13} /> {error}
                 </p>
               )}
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+                className="w-full py-2.5 text-white text-sm font-semibold transition-opacity hover:opacity-85 disabled:opacity-60 flex items-center justify-center gap-2"
+                style={{ background: "var(--accent)", borderRadius: "var(--radius)" }}
               >
                 {submitting ? (
                   <><Loader2 size={15} className="animate-spin" /> Odosielam...</>
@@ -277,19 +331,17 @@ export default function LoginPage() {
         ) : (
           /* Prihlásenie magic linkom */
           <>
-            <h1 className="text-lg font-semibold text-gray-900 mb-1">
+            <h1 className="text-lg font-semibold mb-1" style={{ color: "var(--ink)" }}>
               Prihlásenie
             </h1>
-            <p className="text-sm text-gray-500 mb-6">
+            <p className="text-sm mb-6" style={{ color: "var(--muted)" }}>
               Zadajte Váš email a pošleme Vám prihlasovací odkaz.
             </p>
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">
-                  Email
-                </label>
+                <label className="block text-xs font-medium mb-1" style={{ color: "var(--muted)" }}>Email</label>
                 <div className="relative">
-                  <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "var(--faint)" }} />
                   <input
                     type="email"
                     value={email}
@@ -297,19 +349,26 @@ export default function LoginPage() {
                     required
                     placeholder="vas.email@domena.sk"
                     autoFocus
-                    className="w-full pl-8 pr-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300"
+                    className="w-full pl-8 pr-3 py-2.5 text-sm focus:outline-none"
+                    style={{
+                      background: "var(--paper)",
+                      border: "1px solid var(--line)",
+                      color: "var(--ink)",
+                      borderRadius: "var(--radius)",
+                    }}
                   />
                 </div>
               </div>
               {error && (
-                <p className="text-sm text-red-600 flex items-center gap-1">
+                <p className="text-sm flex items-center gap-1" style={{ color: "var(--danger)" }}>
                   <AlertCircle size={13} /> {error}
                 </p>
               )}
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+                className="w-full py-2.5 text-white text-sm font-semibold transition-opacity hover:opacity-85 disabled:opacity-60 flex items-center justify-center gap-2"
+                style={{ background: "var(--accent)", borderRadius: "var(--radius)" }}
               >
                 {submitting ? (
                   <><Loader2 size={15} className="animate-spin" /> Odosielam...</>
