@@ -1,20 +1,22 @@
 "use client";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import { Menu } from "lucide-react";
 import Sidebar from "./Sidebar";
+import AppHeader from "./AppHeader";
+
+// Pages that get no shell at all (no sidebar, no header)
+const NO_SHELL_PATHS = ["/", "/login"];
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const isLoginPage = pathname === "/login";
 
-  if (isLoginPage) {
+  if (NO_SHELL_PATHS.includes(pathname)) {
     return <>{children}</>;
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen" style={{ background: "var(--paper)" }}>
       {/* Mobile backdrop */}
       {sidebarOpen && (
         <div
@@ -32,19 +34,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <Sidebar onNavigate={() => setSidebarOpen(false)} />
       </div>
 
-      {/* Main content */}
+      {/* Main content column */}
       <div className="flex flex-col flex-1 min-w-0">
-        {/* Mobile top bar */}
-        <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-200 bg-white lg:hidden">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="p-1.5 rounded-lg text-gray-600 hover:bg-gray-100"
-            aria-label="Otvoriť menu"
-          >
-            <Menu size={20} />
-          </button>
-          <span className="font-semibold text-sm text-gray-900">Orange Fakturácia</span>
-        </div>
+        {/* App header — period picker + hamburger on mobile */}
+        <AppHeader onMenuOpen={() => setSidebarOpen(true)} />
 
         <main className="flex-1 p-4 sm:p-6 overflow-auto">{children}</main>
       </div>
