@@ -336,26 +336,28 @@ export default function AnalyzyPage() {
                   Žiadne firemné poplatky (reimportujte výpis)
                 </div>
               ) : (
-                <div className="flex items-center gap-3">
-                  <ResponsiveContainer width="50%" height={200}>
-                    <PieChart>
-                      <Pie
-                        data={data!.topFiremneSluzby}
-                        dataKey="suma"
-                        nameKey="entryName"
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={80}
-                        innerRadius={40}
-                      >
-                        {data!.topFiremneSluzby.map((_, i) => (
-                          <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip formatter={(v: number) => `${v.toFixed(2)} €`} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                  <div className="flex-1 space-y-1.5 text-xs">
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                  <div className="w-full sm:w-[40%] flex-shrink-0">
+                    <ResponsiveContainer width="100%" height={200}>
+                      <PieChart>
+                        <Pie
+                          data={data!.topFiremneSluzby}
+                          dataKey="suma"
+                          nameKey="entryName"
+                          cx="50%"
+                          cy="50%"
+                          outerRadius={80}
+                          innerRadius={40}
+                        >
+                          {data!.topFiremneSluzby.map((_, i) => (
+                            <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip formatter={(v: number) => `${v.toFixed(2)} €`} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="flex-1 w-full space-y-1.5 text-xs">
                     {data!.topFiremneSluzby.map((s, i) => (
                       <div key={i} className="flex items-center gap-2">
                         <span
@@ -403,7 +405,8 @@ export default function AnalyzyPage() {
               <div className="px-5 py-4 border-b border-gray-100">
                 <h2 className="font-semibold text-gray-900">Detail po strediskách — {kpiSubtitle}</h2>
               </div>
-              <table className="w-full text-sm">
+              <div className="overflow-x-auto">
+              <table className="w-full text-sm min-w-[500px]">
                 <thead>
                   <tr className="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
                     <th className="px-4 py-3 text-left">Stredisko</th>
@@ -431,6 +434,7 @@ export default function AnalyzyPage() {
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
           )}
         </>

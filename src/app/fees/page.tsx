@@ -252,26 +252,28 @@ export default function SpolocnostPage() {
             <div className="bg-white rounded-xl border border-gray-200 p-5">
               <h2 className="font-semibold text-gray-900 mb-1">Top firemné služby</h2>
               <p className="text-xs text-gray-400 mb-4">{data.periodLabel} · podľa sumy bez DPH</p>
-              <div className="flex items-center gap-4">
-                <ResponsiveContainer width="40%" height={200}>
-                  <PieChart>
-                    <Pie
-                      data={data.topServices}
-                      dataKey="suma"
-                      nameKey="entryName"
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={80}
-                      innerRadius={40}
-                    >
-                      {data.topServices.map((_, i) => (
-                        <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip formatter={(v: number) => `${v.toFixed(2)} €`} />
-                  </PieChart>
-                </ResponsiveContainer>
-                <div className="flex-1 space-y-1.5 text-xs">
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <div className="w-full sm:w-[40%] flex-shrink-0">
+                  <ResponsiveContainer width="100%" height={200}>
+                    <PieChart>
+                      <Pie
+                        data={data.topServices}
+                        dataKey="suma"
+                        nameKey="entryName"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        innerRadius={40}
+                      >
+                        {data.topServices.map((_, i) => (
+                          <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip formatter={(v: number) => `${v.toFixed(2)} €`} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="flex-1 w-full space-y-1.5 text-xs">
                   {data.topServices.map((s, i) => (
                     <div key={i} className="flex items-center gap-2">
                       <span

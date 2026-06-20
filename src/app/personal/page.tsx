@@ -408,7 +408,7 @@ export default function OverTheLimitPage() {
         )}
 
         {/* Summary badge + company badge */}
-        <div className="ml-auto flex items-center gap-2">
+        <div className="w-full sm:w-auto sm:ml-auto flex flex-wrap items-center gap-2">
           {summary && !loading && (
             <span className="text-xs text-gray-400">
               {summary.pocetCisel} čísel · {summary.celkovaNaklady?.toFixed(2)} €
@@ -482,7 +482,7 @@ export default function OverTheLimitPage() {
         <button
           onClick={exportExcel}
           disabled={!year || !month}
-          className="ml-auto flex items-center gap-2 bg-green-600 hover:bg-green-700 disabled:opacity-40 text-white text-sm font-medium px-4 py-2 rounded-lg"
+          className="flex items-center gap-2 bg-green-600 hover:bg-green-700 disabled:opacity-40 text-white text-sm font-medium px-4 py-2 rounded-lg sm:ml-auto"
         >
           <Download size={15} /> Export Excel
         </button>
@@ -504,8 +504,8 @@ export default function OverTheLimitPage() {
             : "Žiadne záznamy"}
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden overflow-x-auto">
+          <table className="w-full text-sm min-w-[640px]">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200 text-left text-xs text-gray-500 uppercase tracking-wide">
                 <th className="px-4 py-3 cursor-pointer select-none hover:text-gray-700" onClick={() => handleSort("personName")}>

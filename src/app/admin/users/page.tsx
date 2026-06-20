@@ -184,12 +184,12 @@ export default function AdminUsersPage() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-wrap items-start justify-between gap-3 mb-6">
         <div>
           <h1 className="text-xl font-semibold text-gray-900">Správa používateľov</h1>
           <p className="text-sm text-gray-500 mt-0.5">Pozývanie, role a prístupy</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-shrink-0">
           <button
             onClick={loadUsers}
             className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
@@ -366,7 +366,7 @@ export default function AdminUsersPage() {
       )}
 
       {/* Zoznam používateľov */}
-      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm overflow-x-auto">
         {loading ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="animate-spin text-orange-500" size={24} />
@@ -376,7 +376,7 @@ export default function AdminUsersPage() {
         ) : users.length === 0 ? (
           <div className="p-8 text-center text-gray-400 text-sm">Žiadni používatelia</div>
         ) : (
-          <table className="w-full text-sm">
+          <table className="w-full text-sm min-w-[600px]">
             <thead>
               <tr className="border-b border-gray-100 text-xs text-gray-500 uppercase tracking-wide">
                 <th className="text-left px-4 py-3">Meno</th>

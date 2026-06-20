@@ -21,7 +21,11 @@ const nav = [
   { href: "/codebook",  label: "Číselníky",  icon: BookOpen,  adminOnly: true },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+  onNavigate?: () => void;
+}
+
+export default function Sidebar({ onNavigate }: SidebarProps) {
   const pathname = usePathname();
   const { selectedCn, setSelectedCn, companies } = useCompany();
   const { user, logout } = useAuth();
@@ -39,7 +43,7 @@ export default function Sidebar() {
   const showSwitcher = isAdmin || companies.length > 0;
 
   return (
-    <aside className="w-56 bg-white border-r border-gray-200 flex flex-col">
+    <aside className="w-64 h-full bg-white border-r border-gray-200 flex flex-col">
       {/* App header */}
       <div className="p-4 border-b border-gray-200">
         <div className="flex items-center gap-2 mb-3">
@@ -72,6 +76,7 @@ export default function Sidebar() {
                 <Link
                   key={href}
                   href={href}
+                  onClick={onNavigate}
                   className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                     active
                       ? "bg-orange-50 text-orange-700 font-medium"
@@ -88,6 +93,7 @@ export default function Sidebar() {
           {user?.role === "admin" && (
             <Link
               href="/admin/users"
+              onClick={onNavigate}
               className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                 pathname.startsWith("/admin/users")
                   ? "bg-orange-50 text-orange-700 font-medium"
