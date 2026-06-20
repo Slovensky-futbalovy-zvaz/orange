@@ -4,11 +4,12 @@ import { usePathname } from "next/navigation";
 import {
   Users, Upload, FileText, BarChart2,
   Building2, Landmark, Signal, Layers, BookOpen,
-  LogOut, Shield, Github,
+  LogOut, Shield, Github, Palette,
 } from "lucide-react";
 import { CustomSelect } from "@/components/CustomSelect";
 import { useCompany } from "@/contexts/CompanyContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTheme, THEMES } from "@/contexts/ThemeContext";
 
 const nav = [
   { href: "/overview",  label: "Prehľad",    icon: BarChart2 },
@@ -29,6 +30,7 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
   const pathname = usePathname();
   const { selectedCn, setSelectedCn, companies } = useCompany();
   const { user, logout } = useAuth();
+  const { theme, setTheme } = useTheme();
 
   const isAdmin = user?.role === "admin";
   // Voľba „Všetky spoločnosti" má zmysel len pre admina alebo pre používateľa
@@ -43,14 +45,22 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
   const showSwitcher = isAdmin || companies.length > 0;
 
   return (
-    <aside className="w-64 h-full bg-white border-r border-gray-200 flex flex-col">
+    <aside
+      className="w-64 h-full flex flex-col"
+      style={{ background: "var(--side-bg)", borderRight: "1px solid var(--line)" }}
+    >
       {/* App header */}
-      <div className="p-4 border-b border-gray-200">
+      <div className="p-4" style={{ borderBottom: "1px solid color-mix(in srgb, var(--side-fg) 20%, transparent)" }}>
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center flex-shrink-0">
+          <div
+            className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+            style={{ background: "var(--accent)", borderRadius: "var(--radius)" }}
+          >
             <Signal size={16} className="text-white" />
           </div>
-          <div className="font-semibold text-sm text-gray-900 leading-tight">Orange Fakturácia</div>
+          <div className="font-semibold text-sm leading-tight" style={{ color: "var(--side-active-fg)" }}>
+            Orange Fakturácia
+          </div>
         </div>
         {/* Company switcher */}
         {showSwitcher && (
@@ -63,8 +73,8 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-3 flex flex-col">
-        <div className="space-y-1">
+      <nav className="flex-1 p-3 flex flex-col overflow-y-auto">
+        <div className="space-y-0.5">
           {nav
             .filter(({ adminOnly }) => !adminOnly || user?.role === "admin")
             .map(({ href, label, icon: Icon }) => {
@@ -77,11 +87,13 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
                   key={href}
                   href={href}
                   onClick={onNavigate}
-                  className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-                    active
-                      ? "bg-orange-50 text-orange-700 font-medium"
-                      : "text-gray-600 hover:bg-gray-100"
-                  }`}
+                  className="flex items-center gap-3 px-3 py-2 text-sm transition-colors"
+                  style={{
+                    borderRadius: "var(--radius)",
+                    background: active ? "var(--side-active-bg)" : "transparent",
+                    color: active ? "var(--side-active-fg)" : "var(--side-fg)",
+                    fontWeight: active ? 600 : 400,
+                  }}
                 >
                   <Icon size={16} />
                   {label}
@@ -94,11 +106,13 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
             <Link
               href="/admin/users"
               onClick={onNavigate}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-                pathname.startsWith("/admin/users")
-                  ? "bg-orange-50 text-orange-700 font-medium"
-                  : "text-gray-600 hover:bg-gray-100"
-              }`}
+              className="flex items-center gap-3 px-3 py-2 text-sm transition-colors"
+              style={{
+                borderRadius: "var(--radius)",
+                background: pathname.startsWith("/admin/users") ? "var(--side-active-bg)" : "transparent",
+                color: pathname.startsWith("/admin/users") ? "var(--side-active-fg)" : "var(--side-fg)",
+                fontWeight: pathname.startsWith("/admin/users") ? 600 : 400,
+              }}
             >
               <Shield size={16} />
               Používatelia
@@ -106,18 +120,51 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
           )}
         </div>
 
-        {/* Info o používateľovi + odhlásenie — priamo pod menu */}
+        {/* Spacer */}
+        <div className="flex-1" />
+
+        {/* Theme switcher */}
+        <div
+          className="mt-3 pt-3"
+          style={{ borderTop: "1px solid color-mix(in srgb, var(--side-fg) 20%, transparent)" }}
+        >
+          <div className="px-3 pb-2 flex items-center gap-2">
+            <Palette size={12} style={{ color: "var(--side-fg)" }} />
+            <span className="text-xs" style={{ color: "var(--side-fg)" }}>Vzhľad</span>
+          </div>
+          <div className="flex gap-2 px-3">
+            {THEMES.map((t) => (
+              <button
+                key={t.dir}
+                title={t.name}
+                onClick={() => setTheme(t.dir)}
+                className="w-6 h-6 rounded-full border-2 transition-all"
+                style={{
+                  background: t.accent,
+                  borderColor: theme === t.dir ? "var(--side-active-fg)" : "transparent",
+                  transform: theme === t.dir ? "scale(1.2)" : "scale(1)",
+                }}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Info o používateľovi + odhlásenie */}
         {user && (
-          <div className="mt-3 pt-3 border-t border-gray-100 space-y-1">
+          <div
+            className="mt-3 pt-3 space-y-0.5"
+            style={{ borderTop: "1px solid color-mix(in srgb, var(--side-fg) 20%, transparent)" }}
+          >
             <div className="px-3 py-1.5">
-              <div className="text-xs font-medium text-gray-700 truncate">
+              <div className="text-xs font-medium truncate" style={{ color: "var(--side-active-fg)" }}>
                 {user.firstName} {user.lastName}
               </div>
-              <div className="text-xs text-gray-400 truncate">{user.email}</div>
+              <div className="text-xs truncate" style={{ color: "var(--side-fg)" }}>{user.email}</div>
             </div>
             <button
               onClick={logout}
-              className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+              className="w-full flex items-center gap-2 px-3 py-1.5 text-xs transition-colors hover:opacity-80"
+              style={{ color: "var(--side-fg)", borderRadius: "var(--radius)" }}
             >
               <LogOut size={13} />
               Odhlásiť sa
@@ -126,12 +173,16 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
         )}
 
         {/* GitHub odkaz */}
-        <div className="mt-2 pt-2 border-t border-gray-100">
+        <div
+          className="mt-2 pt-2"
+          style={{ borderTop: "1px solid color-mix(in srgb, var(--side-fg) 15%, transparent)" }}
+        >
           <a
             href="https://github.com/Slovensky-futbalovy-zvaz/orange"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-3 py-1.5 text-xs text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
+            className="flex items-center gap-2 px-3 py-1.5 text-xs transition-colors hover:opacity-80"
+            style={{ color: "var(--side-fg)", borderRadius: "var(--radius)" }}
           >
             <Github size={13} />
             Zdrojový kód na GitHub
