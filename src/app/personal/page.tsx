@@ -56,12 +56,6 @@ const MONTH_NAMES = [
   "Júl", "August", "September", "Október", "November", "December",
 ];
 
-const COMPANY_COLORS = [
-  "bg-blue-100 text-blue-700",
-  "bg-purple-100 text-purple-700",
-  "bg-teal-100 text-teal-700",
-];
-
 // ─── Component ─────────────────────────────────────────────────────────────
 
 export default function OverTheLimitPage() {
@@ -270,33 +264,44 @@ export default function OverTheLimitPage() {
 
   function SortIcon({ col }: { col: SortCol }) {
     if (sortCol !== col)
-      return <ChevronsUpDown size={11} className="ml-1 text-gray-300 inline-block" />;
+      return <ChevronsUpDown size={11} className="ml-1 inline-block" style={{ color: "var(--line)" }} />;
     return sortDir === "asc"
-      ? <ChevronUp size={11} className="ml-1 text-orange-500 inline-block" />
-      : <ChevronDown size={11} className="ml-1 text-orange-500 inline-block" />;
+      ? <ChevronUp size={11} className="ml-1 inline-block" style={{ color: "var(--accent)" }} />
+      : <ChevronDown size={11} className="ml-1 inline-block" style={{ color: "var(--accent)" }} />;
   }
 
-  const cnColorMap = new Map(
-    companies.map((c, i) => [c.cn, COMPANY_COLORS[i % COMPANY_COLORS.length]])
-  );
-  const badgeColor = cnColorMap.get(localCn) ?? COMPANY_COLORS[0];
   const companyName = companies.find((c) => c.cn === localCn)?.companyName;
-  const monthLabel = month ? MONTH_NAMES[parseInt(month)] : "";
+  const monthLabel  = month ? MONTH_NAMES[parseInt(month)] : "";
+
+  const modalStyle: React.CSSProperties = {
+    background: "var(--surface)",
+    borderRadius: "1rem",
+    boxShadow: "0 20px 60px rgba(0,0,0,0.18)",
+    width: "100%",
+    maxWidth: 448,
+    margin: "0 1rem",
+    padding: "1.5rem",
+  };
 
   // ─── Render ──────────────────────────────────────────────────────────────
 
   return (
     <div className="max-w-6xl mx-auto">
 
-      {/* Pairing modal */}
+      {/* ── Pairing modal ── */}
       {pairingInvoice && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 p-6">
+          <div style={modalStyle}>
             <div className="flex items-center gap-2 mb-4">
-              <UserPlus size={18} className="text-orange-500" />
-              <h2 className="font-semibold text-gray-900 text-lg">Spárovať číslo</h2>
+              <UserPlus size={18} style={{ color: "var(--accent)" }} />
+              <h2 className="font-semibold text-lg" style={{ color: "var(--ink)" }}>
+                Spárovať číslo
+              </h2>
             </div>
-            <div className="text-sm text-gray-500 mb-4 font-mono bg-gray-50 rounded-lg px-3 py-2">
+            <div
+              className="text-sm font-mono mb-4 px-3 py-2 rounded-lg"
+              style={{ background: "var(--paper)", color: "var(--muted)" }}
+            >
               {pairingInvoice.serviceIdentification} · {pairingInvoice.userName}
             </div>
             <div className="space-y-3">
@@ -317,20 +322,24 @@ export default function OverTheLimitPage() {
               />
               <PairField label="Mesačný limit (€)" value={pairForm.monthlyServiceLimit} onChange={(v) => setPairForm({ ...pairForm, monthlyServiceLimit: v })} type="number" />
             </div>
-            <p className="text-xs text-gray-400 mt-3">
+            <p className="text-xs mt-3" style={{ color: "var(--faint)" }}>
               Ak osoba ešte neexistuje, vytvorí sa automaticky. Zmena sa prejaví vo všetkých mesiacoch.
             </p>
             <div className="flex gap-2 mt-5">
               <button
                 onClick={savePair}
                 disabled={!pairForm.personName.trim() || pairSaving}
-                className="flex-1 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white text-sm font-medium px-4 py-2.5 rounded-lg"
+                className="flex-1 text-sm font-medium px-4 py-2.5 rounded-lg disabled:opacity-50 transition-opacity"
+                style={{ background: "var(--accent)", color: "#fff" }}
               >
                 {pairSaving ? "Ukladám…" : "Uložiť"}
               </button>
               <button
                 onClick={() => setPairingInvoice(null)}
-                className="px-4 py-2.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600"
+                className="px-4 py-2.5 text-sm rounded-lg transition-colors"
+                style={{ border: "1px solid var(--line)", color: "var(--muted)", background: "transparent" }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "var(--paper)")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
               >
                 Zrušiť
               </button>
@@ -339,15 +348,20 @@ export default function OverTheLimitPage() {
         </div>
       )}
 
-      {/* Edit modal — len pre admin */}
+      {/* ── Edit modal (admin only) ── */}
       {isAdmin && editingInvoice && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 p-6">
+          <div style={modalStyle}>
             <div className="flex items-center gap-2 mb-4">
-              <Pencil size={18} className="text-gray-500" />
-              <h2 className="font-semibold text-gray-900 text-lg">Upraviť osobu</h2>
+              <Pencil size={18} style={{ color: "var(--muted)" }} />
+              <h2 className="font-semibold text-lg" style={{ color: "var(--ink)" }}>
+                Upraviť osobu
+              </h2>
             </div>
-            <div className="text-sm text-gray-500 mb-4 font-mono bg-gray-50 rounded-lg px-3 py-2">
+            <div
+              className="text-sm font-mono mb-4 px-3 py-2 rounded-lg"
+              style={{ background: "var(--paper)", color: "var(--muted)" }}
+            >
               {editingInvoice.serviceIdentification} · {editingInvoice.userName}
             </div>
             <div className="space-y-3">
@@ -356,12 +370,25 @@ export default function OverTheLimitPage() {
               <PairSelect label="Typ profilu" value={editForm.profileType} onChange={(v) => setEditForm({ ...editForm, profileType: v })} options={cbProfileTypes} placeholder="— vyber typ —" />
               <PairField label="Mesačný limit (€)" value={editForm.monthlyServiceLimit} onChange={(v) => setEditForm({ ...editForm, monthlyServiceLimit: v })} type="number" />
             </div>
-            <p className="text-xs text-gray-400 mt-3">Zmena sa prejaví vo všetkých mesiacoch a v databáze osôb.</p>
+            <p className="text-xs mt-3" style={{ color: "var(--faint)" }}>
+              Zmena sa prejaví vo všetkých mesiacoch a v databáze osôb.
+            </p>
             <div className="flex gap-2 mt-5">
-              <button onClick={saveEdit} disabled={!editForm.personName.trim() || editSaving} className="flex-1 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white text-sm font-medium px-4 py-2.5 rounded-lg">
+              <button
+                onClick={saveEdit}
+                disabled={!editForm.personName.trim() || editSaving}
+                className="flex-1 text-sm font-medium px-4 py-2.5 rounded-lg disabled:opacity-50 transition-opacity"
+                style={{ background: "var(--accent)", color: "#fff" }}
+              >
                 {editSaving ? "Ukladám…" : "Uložiť"}
               </button>
-              <button onClick={() => setEditingInvoice(null)} className="px-4 py-2.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600">
+              <button
+                onClick={() => setEditingInvoice(null)}
+                className="px-4 py-2.5 text-sm rounded-lg transition-colors"
+                style={{ border: "1px solid var(--line)", color: "var(--muted)", background: "transparent" }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "var(--paper)")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+              >
                 Zrušiť
               </button>
             </div>
@@ -371,12 +398,19 @@ export default function OverTheLimitPage() {
 
       {/* ── Header ── */}
       <div className="flex items-center gap-3 mb-5">
-        <div className="w-9 h-9 bg-red-100 rounded-xl flex items-center justify-center">
-          <FileText size={18} className="text-red-600" />
+        <div
+          className="w-9 h-9 flex items-center justify-center flex-shrink-0"
+          style={{ background: "color-mix(in srgb, var(--danger) 12%, transparent)", borderRadius: "calc(var(--radius) * 0.75)" }}
+        >
+          <FileText size={18} style={{ color: "var(--danger)" }} />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Prehľad osobných profilov</h1>
-          <p className="text-xs text-gray-400 mt-0.5">Prehľad mesačných výpisov služieb</p>
+          <h1 className="text-xl font-semibold" style={{ color: "var(--ink)" }}>
+            Prehľad osobných profilov
+          </h1>
+          <p className="text-xs mt-0.5" style={{ color: "var(--faint)" }}>
+            Prehľad mesačných výpisov služieb
+          </p>
         </div>
       </div>
 
@@ -407,23 +441,26 @@ export default function OverTheLimitPage() {
           </SelectField>
         )}
 
-        {/* Summary badge + company badge */}
+        {/* Summary + badges */}
         <div className="w-full sm:w-auto sm:ml-auto flex flex-wrap items-center gap-2">
           {summary && !loading && (
-            <span className="text-xs text-gray-400">
+            <span className="text-xs" style={{ color: "var(--faint)" }}>
               {summary.pocetCisel} čísel · {summary.celkovaNaklady?.toFixed(2)} €
               {summary.pocetNadlimitov > 0 && (
-                <span className="text-red-600 font-medium ml-1">
+                <span className="font-medium ml-1" style={{ color: "var(--danger)" }}>
                   · {summary.pocetNadlimitov} nadlimitov ({summary.sumaNadlimitov?.toFixed(2)} €)
                 </span>
               )}
             </span>
           )}
           {monthLabel && year && (
-            <span className="text-xs text-gray-400">{monthLabel} {year}</span>
+            <span className="text-xs" style={{ color: "var(--faint)" }}>{monthLabel} {year}</span>
           )}
           {localCn && companyName && (
-            <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${badgeColor}`}>
+            <span
+              className="text-xs font-medium px-2 py-0.5 rounded-full"
+              style={{ background: "var(--accent-soft)", color: "var(--accent-ink)" }}
+            >
               {companyName}
             </span>
           )}
@@ -433,14 +470,22 @@ export default function OverTheLimitPage() {
       {/* ── Table filters (row 2) ── */}
       <div className="flex gap-3 mb-4 flex-wrap items-center">
         {/* nadlimit / all toggle */}
-        <div className="flex rounded-lg border border-gray-200 overflow-hidden bg-white">
+        <div
+          className="flex rounded-lg overflow-hidden"
+          style={{ border: "1px solid var(--line)", background: "var(--surface)" }}
+        >
           {(["nadlimit", "all"] as const).map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`px-4 py-2 text-sm font-medium transition-colors ${
-                filter === f ? "bg-orange-500 text-white" : "text-gray-600 hover:bg-gray-50"
-              }`}
+              className="px-4 py-2 text-sm font-medium transition-colors"
+              style={
+                filter === f
+                  ? { background: "var(--accent)", color: "#fff" }
+                  : { color: "var(--muted)", background: "transparent" }
+              }
+              onMouseEnter={(e) => { if (filter !== f) e.currentTarget.style.background = "var(--paper)"; }}
+              onMouseLeave={(e) => { if (filter !== f) e.currentTarget.style.background = "transparent"; }}
             >
               {f === "nadlimit" ? "Len nadlimity" : "Všetky čísla"}
             </button>
@@ -459,30 +504,40 @@ export default function OverTheLimitPage() {
 
         {/* Search */}
         <div className="relative flex-1 min-w-[200px] max-w-xs">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "var(--faint)" }} />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Hľadať meno, číslo, stredisko…"
-            className="w-full pl-8 pr-8 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-orange-300"
+            className="w-full pl-8 pr-8 py-2 text-sm rounded-lg focus:outline-none"
+            style={{
+              background: "var(--surface)",
+              border: "1px solid var(--line)",
+              color: "var(--ink)",
+            }}
           />
           {search && (
-            <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+            <button
+              onClick={() => setSearch("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2"
+              style={{ color: "var(--faint)" }}
+            >
               <X size={13} />
             </button>
           )}
         </div>
 
         {search.trim() && (
-          <span className="text-xs text-gray-400">{filtered.length} výsledkov</span>
+          <span className="text-xs" style={{ color: "var(--faint)" }}>{filtered.length} výsledkov</span>
         )}
 
         {/* Export */}
         <button
           onClick={exportExcel}
           disabled={!year || !month}
-          className="flex items-center gap-2 bg-green-600 hover:bg-green-700 disabled:opacity-40 text-white text-sm font-medium px-4 py-2 rounded-lg sm:ml-auto"
+          className="flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-lg disabled:opacity-40 transition-opacity sm:ml-auto"
+          style={{ background: "var(--accent)", color: "#fff" }}
         >
           <Download size={15} /> Export Excel
         </button>
@@ -492,11 +547,15 @@ export default function OverTheLimitPage() {
       {loading ? (
         <div className="space-y-2">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="h-12 bg-gray-100 rounded-xl animate-pulse" />
+            <div
+              key={i}
+              className="h-12 rounded-xl animate-pulse"
+              style={{ background: "var(--paper)" }}
+            />
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-16 text-gray-400">
+        <div className="text-center py-16" style={{ color: "var(--faint)" }}>
           {search.trim()
             ? "Žiadne výsledky pre hľadaný výraz"
             : filter === "nadlimit"
@@ -504,95 +563,177 @@ export default function OverTheLimitPage() {
             : "Žiadne záznamy"}
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden overflow-x-auto">
+        <div
+          className="rounded-xl overflow-hidden overflow-x-auto"
+          style={{ border: "1px solid var(--line)", background: "var(--surface)" }}
+        >
           <table className="w-full text-sm min-w-[640px]">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200 text-left text-xs text-gray-500 uppercase tracking-wide">
-                <th className="px-4 py-3 cursor-pointer select-none hover:text-gray-700" onClick={() => handleSort("personName")}>
+              <tr
+                className="text-left text-xs uppercase tracking-wide"
+                style={{
+                  background: "var(--paper)",
+                  borderBottom: "1px solid var(--line)",
+                  color: "var(--muted)",
+                }}
+              >
+                <th
+                  className="px-4 py-3 cursor-pointer select-none"
+                  style={{ transition: "color 0.15s" }}
+                  onClick={() => handleSort("personName")}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = "var(--ink)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted)")}
+                >
                   Meno / Číslo <SortIcon col="personName" />
                 </th>
-                <th className="px-4 py-3 cursor-pointer select-none hover:text-gray-700" onClick={() => handleSort("profileType")}>
+                <th
+                  className="px-4 py-3 cursor-pointer select-none"
+                  style={{ transition: "color 0.15s" }}
+                  onClick={() => handleSort("profileType")}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = "var(--ink)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted)")}
+                >
                   Typ <SortIcon col="profileType" />
                 </th>
-                <th className="px-4 py-3 cursor-pointer select-none hover:text-gray-700" onClick={() => handleSort("department")}>
+                <th
+                  className="px-4 py-3 cursor-pointer select-none"
+                  style={{ transition: "color 0.15s" }}
+                  onClick={() => handleSort("department")}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = "var(--ink)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted)")}
+                >
                   Stredisko <SortIcon col="department" />
                 </th>
-                <th className="px-4 py-3 text-right cursor-pointer select-none hover:text-gray-700" onClick={() => handleSort("monthlyServiceLimit")}>
+                <th
+                  className="px-4 py-3 text-right cursor-pointer select-none"
+                  style={{ transition: "color 0.15s" }}
+                  onClick={() => handleSort("monthlyServiceLimit")}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = "var(--ink)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted)")}
+                >
                   Limit <SortIcon col="monthlyServiceLimit" />
                 </th>
-                <th className="px-4 py-3 text-right cursor-pointer select-none hover:text-gray-700" onClick={() => handleSort("celkovaCena")}>
+                <th
+                  className="px-4 py-3 text-right cursor-pointer select-none"
+                  style={{ transition: "color 0.15s" }}
+                  onClick={() => handleSort("celkovaCena")}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = "var(--ink)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted)")}
+                >
                   Skutočná cena <SortIcon col="celkovaCena" />
                 </th>
-                <th className="px-4 py-3 text-right cursor-pointer select-none hover:text-gray-700" onClick={() => handleSort("overTheLimit")}>
+                <th
+                  className="px-4 py-3 text-right cursor-pointer select-none"
+                  style={{ transition: "color 0.15s" }}
+                  onClick={() => handleSort("overTheLimit")}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = "var(--ink)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted)")}
+                >
                   Nadlimit <SortIcon col="overTheLimit" />
                 </th>
                 <th className="px-4 py-3 w-8" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
-              {filtered.map((inv) => (
+            <tbody>
+              {filtered.map((inv, rowIdx) => (
                 <>
                   <tr
                     key={inv._id}
-                    className={`hover:bg-gray-50 cursor-pointer ${inv.overTheLimit > 0 ? "bg-red-50/30" : ""}`}
+                    className="cursor-pointer transition-colors"
+                    style={{
+                      background: inv.overTheLimit > 0
+                        ? "color-mix(in srgb, var(--danger) 6%, transparent)"
+                        : rowIdx % 2 === 0 ? "transparent" : "var(--paper)",
+                      borderBottom: "1px solid var(--line)",
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = "var(--paper)")}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = inv.overTheLimit > 0
+                        ? "color-mix(in srgb, var(--danger) 6%, transparent)"
+                        : rowIdx % 2 === 0 ? "transparent" : "var(--paper)";
+                    }}
                     onClick={() => toggleExpand(inv._id)}
                   >
                     <td className="px-4 py-3">
-                      <div className="font-medium text-gray-900 flex items-center gap-2">
+                      <div className="font-medium flex items-center gap-2" style={{ color: "var(--ink)" }}>
                         {inv.personName || (
-                          <span className="text-gray-400 italic">Nespárované</span>
+                          <span className="italic" style={{ color: "var(--faint)" }}>Nespárované</span>
                         )}
                         {isAdmin && (!inv.personName ? (
                           <button
                             onClick={(e) => openPair(inv, e)}
-                            className="inline-flex items-center gap-1 text-xs text-orange-600 hover:text-orange-700 bg-orange-50 hover:bg-orange-100 px-2 py-0.5 rounded-full border border-orange-200 transition-colors"
+                            className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full transition-colors"
+                            style={{
+                              color: "var(--accent-ink)",
+                              background: "var(--accent-soft)",
+                              border: "1px solid color-mix(in srgb, var(--accent) 25%, transparent)",
+                            }}
                           >
                             <UserPlus size={11} /> Spárovať
                           </button>
                         ) : (
                           <button
                             onClick={(e) => openEdit(inv, e)}
-                            className="inline-flex items-center p-1 text-gray-400 hover:text-orange-500 hover:bg-orange-50 rounded transition-colors"
+                            className="inline-flex items-center p-1 rounded transition-colors"
                             title="Upraviť osobu"
+                            style={{ color: "var(--faint)" }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.color = "var(--accent)";
+                              e.currentTarget.style.background = "var(--accent-soft)";
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.color = "var(--faint)";
+                              e.currentTarget.style.background = "transparent";
+                            }}
                           >
                             <Pencil size={13} />
                           </button>
                         ))}
                       </div>
-                      <div className="text-xs text-gray-400">
+                      <div className="text-xs" style={{ color: "var(--faint)" }}>
                         {inv.serviceIdentification} · {inv.userName}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-gray-600">{inv.profileType || "—"}</td>
-                    <td className="px-4 py-3 text-gray-600">{inv.department || "—"}</td>
-                    <td className="px-4 py-3 text-right text-gray-600">
+                    <td className="px-4 py-3" style={{ color: "var(--muted)" }}>{inv.profileType || "—"}</td>
+                    <td className="px-4 py-3" style={{ color: "var(--muted)" }}>{inv.department || "—"}</td>
+                    <td className="px-4 py-3 text-right" style={{ color: "var(--muted)" }}>
                       {inv.monthlyServiceLimit != null ? `${inv.monthlyServiceLimit} €` : "—"}
                     </td>
-                    <td className="px-4 py-3 text-right font-medium text-gray-900">
+                    <td className="px-4 py-3 text-right font-medium" style={{ color: "var(--ink)" }}>
                       {inv.celkovaCena.toFixed(2)} €
                     </td>
                     <td className="px-4 py-3 text-right">
                       {inv.overTheLimit > 0 ? (
-                        <span className="inline-flex items-center gap-1 font-semibold text-red-600">
+                        <span
+                          className="inline-flex items-center gap-1 font-semibold"
+                          style={{ color: "var(--danger)" }}
+                        >
                           <AlertTriangle size={12} />
                           {inv.overTheLimit.toFixed(2)} €
                         </span>
                       ) : (
-                        <span className="text-gray-300">—</span>
+                        <span style={{ color: "var(--line)" }}>—</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-gray-400">
+                    <td className="px-4 py-3" style={{ color: "var(--faint)" }}>
                       {expanded.has(inv._id) ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                     </td>
                   </tr>
                   {expanded.has(inv._id) && (
-                    <tr key={`${inv._id}-detail`} className="bg-gray-50">
-                      <td colSpan={7} className="px-6 py-3">
-                        <div className="text-xs text-gray-500 space-y-1">
+                    <tr key={`${inv._id}-detail`}>
+                      <td
+                        colSpan={7}
+                        className="px-6 py-3"
+                        style={{ background: "var(--paper)", borderBottom: "1px solid var(--line)" }}
+                      >
+                        <div className="text-xs space-y-1" style={{ color: "var(--muted)" }}>
                           {inv.details.map((d, i) => (
                             <div key={i} className="flex justify-between">
                               <span>{d.entryName}</span>
-                              <span className={`font-mono ${d.priceWithoutVat < 0 ? "text-green-600" : "text-gray-700"}`}>
+                              <span
+                                className="font-mono"
+                                style={{ color: d.priceWithoutVat < 0 ? "#16a34a" : "var(--muted)" }}
+                              >
                                 {d.priceWithoutVat.toFixed(4)} €
                               </span>
                             </div>
@@ -618,13 +759,20 @@ function PairField({ label, value, onChange, type = "text", autoFocus }: {
 }) {
   return (
     <div>
-      <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>
+      <label className="block text-xs font-medium mb-1" style={{ color: "var(--muted)" }}>{label}</label>
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         autoFocus={autoFocus}
-        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300"
+        className="w-full px-3 py-2 text-sm rounded-lg focus:outline-none"
+        style={{
+          border: "1px solid var(--line)",
+          background: "var(--surface)",
+          color: "var(--ink)",
+        }}
+        onFocus={(e) => (e.target.style.borderColor = "var(--accent)")}
+        onBlur={(e) => (e.target.style.borderColor = "var(--line)")}
       />
     </div>
   );
@@ -637,7 +785,7 @@ function PairSelect({ label, value, onChange, options, placeholder }: {
   const allOptions = options.includes(value) || !value ? options : [value, ...options];
   return (
     <div>
-      <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>
+      <label className="block text-xs font-medium mb-1" style={{ color: "var(--muted)" }}>{label}</label>
       <CustomSelect
         value={value}
         onChange={onChange}
