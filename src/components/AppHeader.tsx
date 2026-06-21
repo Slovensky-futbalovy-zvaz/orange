@@ -2,63 +2,16 @@
 
 import { Menu, Download, Signal } from "lucide-react";
 import { SignalBars } from "@/components/SignalBars";
-import { usePeriod, MONTH_LABELS } from "@/contexts/PeriodContext";
+import PeriodPicker from "@/components/PeriodPicker";
+import { usePeriod } from "@/contexts/PeriodContext";
 
 interface AppHeaderProps {
   /** Called when the hamburger is pressed (mobile) */
   onMenuOpen: () => void;
 }
 
-const MONTHS = Object.entries(MONTH_LABELS); // [["01","Jan"], ...]
-
-// Compact inline select — no wrapper div, inherits body font
-function PeriodSelect({
-  value,
-  onChange,
-  options,
-  "aria-label": ariaLabel,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-  options: [string, string][];
-  "aria-label": string;
-}) {
-  return (
-    <select
-      aria-label={ariaLabel}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="text-sm font-medium focus:outline-none cursor-pointer appearance-none pr-5"
-      style={{
-        background: "transparent",
-        color: "var(--ink)",
-        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "right 0px center",
-        backgroundSize: "10px",
-      }}
-    >
-      {options.map(([val, label]) => (
-        <option key={val} value={val}>{label}</option>
-      ))}
-    </select>
-  );
-}
-
 export default function AppHeader({ onMenuOpen }: AppHeaderProps) {
-  const {
-    year,
-    monthFrom,
-    monthTo,
-    availableYears,
-    periodsLoading,
-    setYear,
-    setMonthFrom,
-    setMonthTo,
-    periodLabel,
-  } = usePeriod();
-
-  const yearOptions: [string, string][] = availableYears.map((y) => [y, y]);
+  const { periodsLoading, periodLabel } = usePeriod();
 
   return (
     <header
@@ -95,52 +48,7 @@ export default function AppHeader({ onMenuOpen }: AppHeaderProps) {
 
       {/* Center / Right — period picker */}
       <div className="flex items-center gap-2 ml-auto">
-        {periodsLoading ? (
-          <SignalBars size="sm" />
-        ) : (
-          <div
-            className="flex items-center gap-1.5 px-3 py-1.5 text-sm"
-            style={{
-              background: "var(--paper)",
-              border: "1px solid var(--line)",
-              borderRadius: "var(--radius)",
-            }}
-          >
-            {/* Year */}
-            {yearOptions.length > 0 && (
-              <PeriodSelect
-                aria-label="Rok"
-                value={year}
-                onChange={setYear}
-                options={yearOptions}
-              />
-            )}
-
-            {/* Separator */}
-            <span style={{ color: "var(--line)", userSelect: "none" }}>|</span>
-
-            {/* Month from */}
-            <PeriodSelect
-              aria-label="Mesiac od"
-              value={monthFrom}
-              onChange={setMonthFrom}
-              options={MONTHS}
-            />
-
-            {/* Range dash */}
-            <span className="text-xs" style={{ color: "var(--faint)", userSelect: "none" }}>
-              –
-            </span>
-
-            {/* Month to */}
-            <PeriodSelect
-              aria-label="Mesiac do"
-              value={monthTo}
-              onChange={setMonthTo}
-              options={MONTHS}
-            />
-          </div>
-        )}
+        {periodsLoading ? <SignalBars size="sm" /> : <PeriodPicker />}
 
         {/* Export button */}
         <button

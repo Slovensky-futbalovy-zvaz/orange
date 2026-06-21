@@ -27,10 +27,15 @@ interface PeriodContextValue {
   monthFrom: string;
   monthTo: string;
   availableYears: string[];
+  /** Najnovší rok/mesiac s dátami (z /api/periods) */
+  latestYear: string;
+  latestMonth: string;
   periodsLoading: boolean;
   setYear: (y: string) => void;
   setMonthFrom: (m: string) => void;
   setMonthTo: (m: string) => void;
+  /** Nastaví celé obdobie naraz (rok + rozsah mesiacov) — bez vedľajších efektov */
+  setPeriod: (year: string, monthFrom: string, monthTo: string) => void;
   /** "Jan – Jún 2024" or "2024" if full year */
   periodLabel: string;
 }
@@ -40,10 +45,13 @@ const PeriodContext = createContext<PeriodContextValue>({
   monthFrom: "01",
   monthTo: "12",
   availableYears: [],
+  latestYear: "",
+  latestMonth: "12",
   periodsLoading: true,
   setYear: () => {},
   setMonthFrom: () => {},
   setMonthTo: () => {},
+  setPeriod: () => {},
   periodLabel: "",
 });
 
@@ -54,6 +62,8 @@ export function PeriodProvider({ children }: { children: ReactNode }) {
   const [year, setYearState] = useState("");
   const [monthFrom, setMonthFromState] = useState("01");
   const [monthTo, setMonthToState] = useState("12");
+  const [latestYear, setLatestYear] = useState("");
+  const [latestMonth, setLatestMonth] = useState("12");
   const [periodsLoading, setPeriodsLoading] = useState(true);
 
   // Load available periods whenever company changes
@@ -67,10 +77,20 @@ export function PeriodProvider({ children }: { children: ReactNode }) {
         setYearState(d.latestYear ?? "");
         setMonthFromState("01");
         setMonthToState(d.latestMonth ?? "12");
+        setLatestYear(d.latestYear ?? "");
+        setLatestMonth(d.latestMonth ?? "12");
         setPeriodsLoading(false);
       })
       .catch(() => setPeriodsLoading(false));
   }, [selectedCn]);
+
+  const setPeriod = useCallback((y: string, from: string, to: string) => {
+    const f = parseInt(from) <= parseInt(to) ? from : to;
+    const t = parseInt(from) <= parseInt(to) ? to : from;
+    setYearState(y);
+    setMonthFromState(f);
+    setMonthToState(t);
+  }, []);
 
   const setYear = useCallback((y: string) => {
     setYearState(y);
@@ -111,10 +131,13 @@ export function PeriodProvider({ children }: { children: ReactNode }) {
         monthFrom,
         monthTo,
         availableYears,
+        latestYear,
+        latestMonth,
         periodsLoading,
         setYear,
         setMonthFrom,
         setMonthTo,
+        setPeriod,
         periodLabel,
       }}
     >
