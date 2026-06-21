@@ -288,7 +288,7 @@ export default function AnalyzyPage() {
                   <Tooltip formatter={(v: number) => formatEur(v)} />
                   <Legend />
                   <Bar dataKey="Zamestnanci (€)" stackId="a" fill="#6366f1" radius={[0, 0, 0, 0]} />
-                  <Bar dataKey="Firemné (€)" stackId="a" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="Firemné (€)" stackId="a" fill="#7c3500" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

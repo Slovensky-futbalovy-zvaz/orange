@@ -10,6 +10,23 @@ Formát je inšpirovaný [Keep a Changelog](https://keepachangelog.com/en/1.0.0/
 
 ---
 
+## [2026-06-21] — Preloader, SignalBars, kontrast grafov
+
+### Pridané
+
+- **`src/components/SignalBars.tsx`** — animovaná CSS komponenta (5 stĺpcov rastúcej výšky, staggered delay, farba z `--accent`); veľkosti `sm` / `md` / `lg`
+- **`src/components/Preloader.tsx`** — full-screen overlay pri prvom načítaní, fade-out po 700 ms, unmount po 1 100 ms; používa `SignalBars size="lg"`
+
+### Zmenené
+
+- **`src/app/layout.tsx`** — `<Preloader />` vložený do root layoutu (pred `<AppShell>`)
+- Všetky inline loading stavy `Načítavam…` nahradené komponentou `<SignalBars>` v 11 súboroch:
+  `fees/[month]`, `spolocnost/[month]`, `services/[month]`, `companies`, `people`, `overview`, `osoby`, `personal/[month]`, `analyzy`, `report/[month]`, `AppHeader`
+- **`src/app/overview/page.tsx`** — druhá séria grafov (Firemné €): farba zmenená z `#f59e0b` (amber) na `#7c3500` (burnt orange) pre vyšší kontrast voči `--accent`
+- **`src/app/analyzy/page.tsx`** — rovnaká zmena farby `#f59e0b` → `#7c3500` pre sériu „Firemné (€)"
+
+---
+
 ## [2026-06-20] — Mobilná responzivita
 
 ### Pridané

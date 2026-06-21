@@ -82,7 +82,7 @@ export default function AnalyzyPage() {
   // Derive chart colours from the current theme
   const accentHex = THEMES.find((t) => t.dir === theme)?.accent ?? "#ff7900";
   const dangerHex = "#ef4444";
-  const amberHex = "#f59e0b";
+  const amberHex = "#7c3500";
 
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
