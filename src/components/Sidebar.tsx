@@ -1,10 +1,11 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState, useRef, useEffect } from "react";
 import {
   Users, Upload, FileText, BarChart2,
   Building2, Landmark, Signal, Layers, BookOpen,
-  LogOut, Shield, Github, Palette, LayoutDashboard,
+  LogOut, Shield, Github, Palette, LayoutDashboard, Check, ChevronDown,
 } from "lucide-react";
 import { CustomSelect } from "@/components/CustomSelect";
 import { useCompany } from "@/contexts/CompanyContext";
@@ -32,6 +33,21 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
   const { selectedCn, setSelectedCn, companies } = useCompany();
   const { user, logout } = useAuth();
   const { theme, setTheme } = useTheme();
+
+  const [themeMenuOpen, setThemeMenuOpen] = useState(false);
+  const themeRef = useRef<HTMLDivElement>(null);
+  const currentTheme = THEMES.find((t) => t.dir === theme) ?? THEMES[0];
+
+  useEffect(() => {
+    if (!themeMenuOpen) return;
+    function onDown(e: MouseEvent) {
+      if (themeRef.current && !themeRef.current.contains(e.target as Node)) {
+        setThemeMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [themeMenuOpen]);
 
   const isAdmin = user?.role === "admin";
   // Voľbu „Všetky spoločnosti" vidí len Správca (admin) — má prístup ku všetkým
@@ -128,30 +144,75 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
         {/* Spacer */}
         <div className="flex-1" />
 
-        {/* Theme switcher */}
+        {/* Theme switcher — šablóna */}
         <div
-          className="mt-3 pt-3"
+          ref={themeRef}
+          className="mt-3 pt-3 relative"
           style={{ borderTop: "1px solid color-mix(in srgb, var(--side-fg) 20%, transparent)" }}
         >
-          <div className="px-3 pb-2 flex items-center gap-2">
-            <Palette size={12} style={{ color: "var(--side-fg)" }} />
-            <span className="text-xs" style={{ color: "var(--side-fg)" }}>Vzhľad</span>
-          </div>
-          <div className="flex gap-2 px-3">
-            {THEMES.map((t) => (
-              <button
-                key={t.dir}
-                title={t.name}
-                onClick={() => setTheme(t.dir)}
-                className="w-6 h-6 rounded-full border-2 transition-all"
-                style={{
-                  background: t.accent,
-                  borderColor: theme === t.dir ? "var(--side-active-fg)" : "transparent",
-                  transform: theme === t.dir ? "scale(1.2)" : "scale(1)",
-                }}
-              />
-            ))}
-          </div>
+          <button
+            onClick={() => setThemeMenuOpen((o) => !o)}
+            className="w-full flex items-center gap-3 px-3 py-2 text-sm transition-colors"
+            style={{
+              borderRadius: "var(--radius)",
+              color: "var(--side-fg)",
+              background: themeMenuOpen ? "var(--side-active-bg)" : "transparent",
+            }}
+            aria-haspopup="menu"
+            aria-expanded={themeMenuOpen}
+          >
+            <Palette size={16} />
+            <span className="flex-1 text-left">Šablóna · {currentTheme.name}</span>
+            <span
+              className="w-4 h-4 flex-shrink-0"
+              style={{ background: currentTheme.accent, borderRadius: "calc(var(--radius) * 0.6)" }}
+            />
+            <ChevronDown
+              size={14}
+              className={`transition-transform ${themeMenuOpen ? "rotate-180" : ""}`}
+              style={{ opacity: 0.6 }}
+            />
+          </button>
+
+          {themeMenuOpen && (
+            <div
+              role="menu"
+              className="absolute left-3 right-3 bottom-full mb-1 py-1 z-20 overflow-hidden"
+              style={{
+                background: "var(--side-bg)",
+                border: "1px solid color-mix(in srgb, var(--side-fg) 25%, transparent)",
+                borderRadius: "var(--radius)",
+                boxShadow: "0 8px 24px rgba(0,0,0,0.35)",
+              }}
+            >
+              {THEMES.map((t) => {
+                const active = t.dir === theme;
+                return (
+                  <button
+                    key={t.dir}
+                    role="menuitemradio"
+                    aria-checked={active}
+                    onClick={() => {
+                      setTheme(t.dir);
+                      setThemeMenuOpen(false);
+                    }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-sm transition-colors"
+                    style={{
+                      color: active ? "var(--side-active-fg)" : "var(--side-fg)",
+                      background: active ? "var(--side-active-bg)" : "transparent",
+                    }}
+                  >
+                    <span
+                      className="w-3.5 h-3.5 flex-shrink-0"
+                      style={{ background: t.accent, borderRadius: "calc(var(--radius) * 0.5)" }}
+                    />
+                    <span className="flex-1 text-left">{t.name}</span>
+                    {active && <Check size={14} style={{ color: "var(--side-active-fg)" }} />}
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* Info o používateľovi + odhlásenie */}

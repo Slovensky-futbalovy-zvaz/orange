@@ -13,12 +13,20 @@ Formát je inšpirovaný [Keep a Changelog](https://keepachangelog.com/en/1.0.0/
 - **Komplexný prehľad** — nová obrazovka `src/app/complex-overview/page.tsx` s analytickým pohľadom na náklady za **všetky** spoločnosti (ignoruje vyberač spoločnosti). Obsahuje KPI karty, mesačný trend nákladov/nadlimitov, stacked graf nákladov po spoločnostiach po mesiacoch a podiel spoločností na celkových nákladoch (donut + tabuľka s % z celku). Účel: vyjednávanie množstevných zliav a prehľad podielu firiem. **Bez** blokov „Opakovaní prekračovatelia" a „Detail po strediskách".
 - **`src/app/api/complex-overview/route.ts`** — agregačné API cez všetky spoločnosti (rok + rozsah mesiacov); prístup len pre Správcu alebo používateľa s príznakom `complexOverview`.
 - **Príznak `complexOverview` na používateľovi** (`src/models/User.ts`) — riadi prístup ku Komplexnému prehľadu; Správca ho má vždy. Nastaviteľný cez checkbox v správe používateľov (pozvánka aj editácia).
+- **`src/components/PeriodPicker.tsx`** — nový popover vyberač obdobia v hlavičke: navigácia rokov (len roky s dátami), výber rozsahu mesiacov (1. klik začiatok, 2. klik koniec), „Aktuálny mesiac" a „Hotovo" (zmena sa aplikuje až po potvrdení).
 
 ### Zmenené
 
-- **`src/components/Sidebar.tsx`** — voľbu „Všetky spoločnosti" vo vyberači vidí už len Správca (mýlila bežných používateľov). Pridaná položka menu „Komplexný prehľad" (pre Správcu alebo používateľa s príznakom).
+- **`src/components/Sidebar.tsx`** — voľbu „Všetky spoločnosti" vo vyberači vidí už len Správca (mýlila bežných používateľov). Pridaná položka menu „Komplexný prehľad" (pre Správcu alebo používateľa s príznakom). Prepínač šablón prerobený na riadok „Šablóna · {názov}" s farebným štvorčekom a rozbaľovacím menu (namiesto štyroch farebných bodiek).
 - **`src/contexts/CompanyContext.tsx`** — bežnému používateľovi sa vždy vyberie konkrétna firma (nikdy nezostane na implicitnom „všetky"); výber je role-aware a počká na načítanie auth.
 - **`/api/auth/me`, `AuthContext`, `/api/admin/users`** — doplnené pole `complexOverview`.
+- **`src/contexts/PeriodContext.tsx`** — doplnené `setPeriod()`, `latestYear`, `latestMonth` pre nový vyberač obdobia.
+- **`src/components/AppHeader.tsx`** — staré tri rozbaľovačky obdobia nahradené komponentom `PeriodPicker`; odstránené nefunkčné tlačidlo „Export" (export do Excelu je na obrazovke Osobné).
+
+### Odstránené
+
+- Nepoužívané legacy stránky so slovenskými routami (neboli v menu, duplikovali anglické ekvivalenty): `/analyzy` (≈ `/overview`), `/spolocnost` + `/spolocnost/[month]`, `/osoby` (≈ `/people`), `/report` + `/report/[month]` (≈ `/personal`).
+- Stray súbor `jose-6.2.3.tgz` z roota repozitára (balík sa ťahá z npm registry).
 
 ---
 
