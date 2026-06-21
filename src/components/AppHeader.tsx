@@ -1,6 +1,6 @@
 "use client";
 
-import { Menu, Download, Signal } from "lucide-react";
+import { Menu, Signal } from "lucide-react";
 import { SignalBars } from "@/components/SignalBars";
 import PeriodPicker from "@/components/PeriodPicker";
 import { usePeriod } from "@/contexts/PeriodContext";
@@ -11,7 +11,7 @@ interface AppHeaderProps {
 }
 
 export default function AppHeader({ onMenuOpen }: AppHeaderProps) {
-  const { periodsLoading, periodLabel } = usePeriod();
+  const { periodsLoading } = usePeriod();
 
   return (
     <header
@@ -49,21 +49,6 @@ export default function AppHeader({ onMenuOpen }: AppHeaderProps) {
       {/* Center / Right — period picker */}
       <div className="flex items-center gap-2 ml-auto">
         {periodsLoading ? <SignalBars size="sm" /> : <PeriodPicker />}
-
-        {/* Export button */}
-        <button
-          className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-opacity hover:opacity-80"
-          style={{
-            background: "var(--accent-soft)",
-            color: "var(--accent-ink)",
-            border: "1px solid color-mix(in srgb, var(--accent) 25%, transparent)",
-            borderRadius: "var(--radius)",
-          }}
-          title={`Export — ${periodLabel}`}
-        >
-          <Download size={14} />
-          <span className="hidden md:inline">Export</span>
-        </button>
       </div>
     </header>
   );
