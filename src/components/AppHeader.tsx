@@ -1,6 +1,7 @@
 "use client";
 
-import { Menu, Download, Signal, Loader2 } from "lucide-react";
+import { Menu, Download, Signal } from "lucide-react";
+import { SignalBars } from "@/components/SignalBars";
 import { usePeriod, MONTH_LABELS } from "@/contexts/PeriodContext";
 
 interface AppHeaderProps {
@@ -95,10 +96,7 @@ export default function AppHeader({ onMenuOpen }: AppHeaderProps) {
       {/* Center / Right — period picker */}
       <div className="flex items-center gap-2 ml-auto">
         {periodsLoading ? (
-          <div className="flex items-center gap-1.5" style={{ color: "var(--faint)" }}>
-            <Loader2 size={13} className="animate-spin" />
-            <span className="text-xs">Načítavam...</span>
-          </div>
+          <SignalBars size="sm" />
         ) : (
           <div
             className="flex items-center gap-1.5 px-3 py-1.5 text-sm"

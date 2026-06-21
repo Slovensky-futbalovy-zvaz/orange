@@ -3,6 +3,7 @@ import { Manrope, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import AppShell from "@/components/AppShell";
 import { Providers } from "@/components/Providers";
+import { Preloader } from "@/components/Preloader";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -49,6 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="sk" data-dir="d">
       <body className={`${manrope.variable} ${instrumentSerif.variable}`}>
         <Providers>
+          <Preloader />
           <AppShell>{children}</AppShell>
         </Providers>
       </body>

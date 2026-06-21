@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ChevronDown, ChevronUp, Layers } from "lucide-react";
 import { formatEur } from "@/lib/format";
+import { SignalBars } from "@/components/SignalBars";
 
 interface Detail {
   entryName: string;
@@ -48,7 +49,7 @@ export default function ServiceDetailPage({ params }: { params: { month: string 
     });
   }
 
-  if (loading) return <div className="text-center py-20 text-gray-400">Načítavam…</div>;
+  if (loading) return <div className="flex justify-center items-center py-20"><SignalBars size="md" /></div>;
   if (!data) return null;
 
   return (

@@ -4,6 +4,7 @@ import { Download, ChevronDown, ChevronUp, AlertTriangle, ChevronsUpDown, Search
 import { SelectField } from "@/components/SelectField";
 import { useCompany } from "@/contexts/CompanyContext";
 import { formatEur } from "@/lib/format";
+import { SignalBars } from "@/components/SignalBars";
 
 interface InvoiceDetail {
   entryName: string;
@@ -287,7 +288,7 @@ export default function ReportPage({ params }: { params: { month: string } }) {
       </div>
 
       {loading ? (
-        <div className="text-center py-16 text-gray-400">Načítavam...</div>
+        <div className="flex justify-center py-16"><SignalBars size="sm" /></div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-16 text-gray-400">
           {search.trim()

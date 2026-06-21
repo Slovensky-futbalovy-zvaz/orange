@@ -6,6 +6,7 @@ import {
   PieChart, Pie, Cell,
 } from "recharts";
 import { Phone, Euro, AlertTriangle, TrendingUp } from "lucide-react";
+import { SignalBars } from "@/components/SignalBars";
 import { CustomSelect } from "@/components/CustomSelect";
 import { useCompany } from "@/contexts/CompanyContext";
 import { formatEur } from "@/lib/format";
@@ -269,7 +270,7 @@ export default function AnalyzyPage() {
       ) : null}
 
       {loading ? (
-        <div className="text-center py-12 text-gray-400">Načítavam analýzy…</div>
+        <div className="flex justify-center py-12"><SignalBars size="sm" /></div>
       ) : (
         <>
           {/* Stacked: zamestnanci vs firma */}

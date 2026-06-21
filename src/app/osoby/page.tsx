@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Plus, Pencil, Trash2, Upload, Search, X, Check } from "lucide-react";
+import { SignalBars } from "@/components/SignalBars";
 import { SelectField } from "@/components/SelectField";
 import { useCompany } from "@/contexts/CompanyContext";
 import * as XLSX from "xlsx";
@@ -205,7 +206,7 @@ export default function OsobyPage() {
 
       {/* Table */}
       {loading ? (
-        <div className="text-center py-12 text-gray-400">Načítavam…</div>
+        <div className="flex justify-center py-12"><SignalBars size="sm" /></div>
       ) : (
         <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
           <table className="w-full text-sm">

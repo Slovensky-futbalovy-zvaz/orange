@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Plus, Pencil, Trash2, Check, X, Landmark } from "lucide-react";
+import { SignalBars } from "@/components/SignalBars";
 
 interface Company {
   _id: string;
@@ -145,7 +146,7 @@ export default function CompaniesPage() {
       )}
 
       {loading ? (
-        <div className="text-center py-16 text-gray-400">Načítavam...</div>
+        <div className="flex justify-center py-16"><SignalBars size="sm" /></div>
       ) : companies.length === 0 ? (
         <div className="text-center py-16 text-gray-400">
           Žiadne spoločnosti. Pridajte prvú spoločnosť pomocou tlačidla vyššie.

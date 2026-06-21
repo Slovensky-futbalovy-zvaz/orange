@@ -6,6 +6,7 @@ import {
   PieChart, Pie, Cell,
 } from "recharts";
 import { Phone, Euro, AlertTriangle, TrendingUp } from "lucide-react";
+import { SignalBars } from "@/components/SignalBars";
 import { useCompany } from "@/contexts/CompanyContext";
 import { usePeriod } from "@/contexts/PeriodContext";
 import { useTheme, THEMES } from "@/contexts/ThemeContext";
@@ -195,11 +196,8 @@ export default function AnalyzyPage() {
       ) : null}
 
       {loading ? (
-        <div
-          className="text-sm text-center py-16"
-          style={{ color: "var(--faint)" }}
-        >
-          Načítavam analýzy…
+        <div className="flex justify-center py-16">
+          <SignalBars size="sm" />
         </div>
       ) : (
         <>

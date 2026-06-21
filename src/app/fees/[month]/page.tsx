@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ChevronDown, ChevronUp, Building2 } from "lucide-react";
 import { formatEur } from "@/lib/format";
+import { SignalBars } from "@/components/SignalBars";
 
 interface Detail {
   entryName: string;
@@ -135,7 +136,7 @@ export default function SpolocnostDetailPage({ params }: { params: { month: stri
       .then((d) => { setData(d); setLoading(false); });
   }, [params.month, cn]);
 
-  if (loading) return <div className="text-center py-20 text-gray-400">Načítavam…</div>;
+  if (loading) return <div className="flex justify-center items-center py-20"><SignalBars size="md" /></div>;
   if (!data) return null;
 
   const isEmpty = data.annex.length === 0 && data.mainCons.length === 0;
