@@ -6,6 +6,11 @@ import { usePeriod, MONTH_LABELS } from "@/contexts/PeriodContext";
 
 const MONTHS = Object.keys(MONTH_LABELS); // ["01" ... "12"]
 
+/**
+ * Globálny vyberač obdobia v hlavičke aplikácie (AppHeader). Popover:
+ * navigácia rokov (len roky s dátami) + výber rozsahu mesiacov
+ * (1. klik = začiatok, 2. klik = koniec). Zmena sa aplikuje až cez „Hotovo".
+ */
 export default function PeriodPicker() {
   const {
     year, monthFrom, monthTo,
@@ -20,16 +25,13 @@ export default function PeriodPicker() {
   const [draftYear, setDraftYear] = useState(year);
   const [draftFrom, setDraftFrom] = useState(monthFrom);
   const [draftTo, setDraftTo] = useState(monthTo);
-  // true keď čakáme na druhý klik (koniec rozsahu)
   const [pendingEnd, setPendingEnd] = useState(false);
 
-  // Roky s dátami, vzostupne
   const years = [...availableYears].sort((a, b) => parseInt(a) - parseInt(b));
   const yearIdx = years.indexOf(draftYear);
   const hasPrev = yearIdx > 0;
   const hasNext = yearIdx >= 0 && yearIdx < years.length - 1;
 
-  // Pri otvorení načítaj aktuálne (aplikované) hodnoty do draftu
   function openPicker() {
     setDraftYear(year || latestYear);
     setDraftFrom(monthFrom);
@@ -38,13 +40,10 @@ export default function PeriodPicker() {
     setOpen(true);
   }
 
-  // Zatvorenie bez aplikovania (klik mimo / Escape)
   useEffect(() => {
     if (!open) return;
     function onDown(e: MouseEvent) {
-      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setOpen(false);
     }
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") setOpen(false);
@@ -59,25 +58,16 @@ export default function PeriodPicker() {
 
   function clickMonth(m: string) {
     if (!pendingEnd) {
-      // 1. klik — začiatok rozsahu
       setDraftFrom(m);
       setDraftTo(m);
       setPendingEnd(true);
     } else {
-      // 2. klik — koniec rozsahu (zoradí sa)
       const a = parseInt(draftFrom);
       const b = parseInt(m);
-      setDraftFrom((Math.min(a, b)).toString().padStart(2, "0"));
-      setDraftTo((Math.max(a, b)).toString().padStart(2, "0"));
+      setDraftFrom(Math.min(a, b).toString().padStart(2, "0"));
+      setDraftTo(Math.max(a, b).toString().padStart(2, "0"));
       setPendingEnd(false);
     }
-  }
-
-  function goPrevYear() {
-    if (hasPrev) setDraftYear(years[yearIdx - 1]);
-  }
-  function goNextYear() {
-    if (hasNext) setDraftYear(years[yearIdx + 1]);
   }
 
   function selectCurrentMonth() {
@@ -140,7 +130,7 @@ export default function PeriodPicker() {
           <div className="flex items-center justify-between mb-4">
             <button
               type="button"
-              onClick={goPrevYear}
+              onClick={() => hasPrev && setDraftYear(years[yearIdx - 1])}
               disabled={!hasPrev}
               className="w-9 h-9 flex items-center justify-center transition-opacity disabled:opacity-30 disabled:cursor-not-allowed hover:opacity-70"
               style={{ border: "1px solid var(--line)", borderRadius: "var(--radius)", color: "var(--ink)" }}
@@ -153,7 +143,7 @@ export default function PeriodPicker() {
             </span>
             <button
               type="button"
-              onClick={goNextYear}
+              onClick={() => hasNext && setDraftYear(years[yearIdx + 1])}
               disabled={!hasNext}
               className="w-9 h-9 flex items-center justify-center transition-opacity disabled:opacity-30 disabled:cursor-not-allowed hover:opacity-70"
               style={{ border: "1px solid var(--line)", borderRadius: "var(--radius)", color: "var(--ink)" }}
@@ -178,9 +168,7 @@ export default function PeriodPicker() {
                     borderRadius: "var(--radius)",
                     background: active ? "var(--accent)" : "var(--surface)",
                     color: active ? "#fff" : "var(--ink)",
-                    border: active
-                      ? "1px solid var(--accent)"
-                      : "1px solid var(--line)",
+                    border: active ? "1px solid var(--accent)" : "1px solid var(--line)",
                     outline: start ? "2px solid var(--accent)" : "none",
                     outlineOffset: start ? "1px" : undefined,
                   }}
