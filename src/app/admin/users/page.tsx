@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import {
   UserPlus, Trash2, Mail, Shield, User as UserIcon,
   Loader2, CheckCircle, AlertCircle, Building2, X, RefreshCw,
-  ChevronDown, Check,
+  ChevronDown, Check, LayoutDashboard,
 } from "lucide-react";
 
 interface UserRow {
@@ -399,7 +399,7 @@ export default function AdminUsersPage() {
         ) : users.length === 0 ? (
           <div className="p-8 text-center text-gray-400 text-sm">Žiadni používatelia</div>
         ) : (
-          <table className="w-full text-sm min-w-[600px]">
+          <table className="w-full text-sm min-w-[720px]">
             <thead>
               <tr className="border-b border-gray-100 text-xs text-gray-500 uppercase tracking-wide">
                 <th className="text-left px-4 py-3">Meno</th>
@@ -407,6 +407,7 @@ export default function AdminUsersPage() {
                 <th className="text-left px-4 py-3">Rola</th>
                 <th className="text-left px-4 py-3">Stav</th>
                 <th className="text-left px-4 py-3">Spoločnosti</th>
+                <th className="text-left px-4 py-3">Kompl. prehľad</th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>
@@ -453,6 +454,15 @@ export default function AdminUsersPage() {
                         .join(", ") || u.companies.join(", ")
                     ) : (
                       <span className="text-gray-300">—</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3">
+                    {u.role === "admin" || u.complexOverview ? (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-orange-50 text-orange-700">
+                        <LayoutDashboard size={10} /> Áno
+                      </span>
+                    ) : (
+                      <span className="text-gray-300 text-xs">—</span>
                     )}
                   </td>
                   <td className="px-4 py-3">
