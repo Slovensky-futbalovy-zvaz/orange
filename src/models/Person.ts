@@ -25,8 +25,9 @@ const PersonSchema = new Schema<IPerson>(
   { timestamps: true }
 );
 
+// Pozn.: unikátny index na `serviceIdentification` je definovaný priamo
+// na poli (`unique: true`) — netreba ho deklarovať druhýkrát.
 PersonSchema.index({ department: 1 });
-PersonSchema.index({ serviceIdentification: 1 }, { unique: true });
 
 export default mongoose.models.Person ||
   mongoose.model<IPerson>("Person", PersonSchema);
