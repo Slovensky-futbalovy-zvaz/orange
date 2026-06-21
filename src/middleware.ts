@@ -44,7 +44,6 @@ export async function middleware(request: NextRequest) {
       "/people",
       "/import",
       "/codebook",
-      "/api/companies",
       "/api/people",
       "/api/codebook",
     ];
