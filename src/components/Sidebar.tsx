@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import {
   Users, Upload, FileText, BarChart2,
   Building2, Landmark, Signal, Layers, BookOpen,
-  LogOut, Shield, Github, Palette,
+  LogOut, Shield, Github, Palette, LayoutDashboard,
 } from "lucide-react";
 import { CustomSelect } from "@/components/CustomSelect";
 import { useCompany } from "@/contexts/CompanyContext";
@@ -12,14 +12,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTheme, THEMES } from "@/contexts/ThemeContext";
 
 const nav = [
-  { href: "/overview",  label: "Prehľad",    icon: BarChart2 },
-  { href: "/personal",  label: "Osobné",     icon: FileText  },
-  { href: "/fees",      label: "Poplatky",   icon: Building2 },
-  { href: "/services",  label: "Služby",     icon: Layers    },
-  { href: "/companies", label: "Spoločnosti", icon: Landmark,  adminOnly: true },
-  { href: "/people",    label: "Osoby",      icon: Users,     adminOnly: true },
-  { href: "/import",    label: "Import",     icon: Upload,    adminOnly: true },
-  { href: "/codebook",  label: "Číselníky",  icon: BookOpen,  adminOnly: true },
+  { href: "/overview",          label: "Prehľad",          icon: BarChart2 },
+  { href: "/complex-overview",  label: "Komplexný prehľad", icon: LayoutDashboard, complexOnly: true },
+  { href: "/personal",          label: "Osobné",           icon: FileText  },
+  { href: "/fees",              label: "Poplatky",         icon: Building2 },
+  { href: "/services",          label: "Služby",           icon: Layers    },
+  { href: "/companies",         label: "Spoločnosti",      icon: Landmark,  adminOnly: true },
+  { href: "/people",            label: "Osoby",            icon: Users,     adminOnly: true },
+  { href: "/import",            label: "Import",           icon: Upload,    adminOnly: true },
+  { href: "/codebook",          label: "Číselníky",        icon: BookOpen,  adminOnly: true },
 ];
 
 interface SidebarProps {
@@ -33,10 +34,10 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
   const { theme, setTheme } = useTheme();
 
   const isAdmin = user?.role === "admin";
-  // Voľba „Všetky spoločnosti" má zmysel len pre admina alebo pre používateľa
-  // s prístupom k viacerým firmám. Používateľ s jedinou firmou ju nevidí —
-  // CompanyContext mu túto firmu automaticky vyberie.
-  const showAllOption = isAdmin || companies.length > 1;
+  // Voľbu „Všetky spoločnosti" vidí len Správca (admin) — má prístup ku všetkým
+  // firmám. Bežný používateľ ju nevidí (mýlila ich); CompanyContext mu vždy
+  // vyberie konkrétnu firmu.
+  const showAllOption = isAdmin;
   const companyOptions = [
     ...(showAllOption ? [{ value: "", label: "Všetky spoločnosti" }] : []),
     ...companies.map((c) => ({ value: c.cn, label: c.companyName })),
@@ -76,7 +77,11 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
       <nav className="flex-1 p-3 flex flex-col overflow-y-auto">
         <div className="space-y-0.5">
           {nav
-            .filter(({ adminOnly }) => !adminOnly || user?.role === "admin")
+            .filter(({ adminOnly, complexOnly }) => {
+              if (adminOnly) return user?.role === "admin";
+              if (complexOnly) return isAdmin || user?.complexOverview === true;
+              return true;
+            })
             .map(({ href, label, icon: Icon }) => {
               const active =
                 pathname === href ||

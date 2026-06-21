@@ -7,6 +7,7 @@ export interface IUser extends Document {
   role: "admin" | "user";
   status: "pending" | "active";
   companies: string[]; // CN kódy spoločností; prázdne pole = žiadne (pre admin sa ignoruje)
+  complexOverview: boolean; // prístup ku Komplexnému prehľadu (admin ho má vždy)
   magicToken: string | null;
   magicTokenExpiry: Date | null;
   createdAt: Date;
@@ -31,6 +32,7 @@ const UserSchema = new Schema<IUser>(
       default: "pending",
     },
     companies: [{ type: String }],
+    complexOverview: { type: Boolean, default: false },
     magicToken: { type: String, default: null },
     magicTokenExpiry: { type: Date, default: null },
   },

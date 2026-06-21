@@ -8,6 +8,18 @@ Formát je inšpirovaný [Keep a Changelog](https://keepachangelog.com/en/1.0.0/
 
 ## [Unreleased]
 
+### Pridané
+
+- **Komplexný prehľad** — nová obrazovka `src/app/complex-overview/page.tsx` s analytickým pohľadom na náklady za **všetky** spoločnosti (ignoruje vyberač spoločnosti). Obsahuje KPI karty, mesačný trend nákladov/nadlimitov, stacked graf nákladov po spoločnostiach po mesiacoch a podiel spoločností na celkových nákladoch (donut + tabuľka s % z celku). Účel: vyjednávanie množstevných zliav a prehľad podielu firiem. **Bez** blokov „Opakovaní prekračovatelia" a „Detail po strediskách".
+- **`src/app/api/complex-overview/route.ts`** — agregačné API cez všetky spoločnosti (rok + rozsah mesiacov); prístup len pre Správcu alebo používateľa s príznakom `complexOverview`.
+- **Príznak `complexOverview` na používateľovi** (`src/models/User.ts`) — riadi prístup ku Komplexnému prehľadu; Správca ho má vždy. Nastaviteľný cez checkbox v správe používateľov (pozvánka aj editácia).
+
+### Zmenené
+
+- **`src/components/Sidebar.tsx`** — voľbu „Všetky spoločnosti" vo vyberači vidí už len Správca (mýlila bežných používateľov). Pridaná položka menu „Komplexný prehľad" (pre Správcu alebo používateľa s príznakom).
+- **`src/contexts/CompanyContext.tsx`** — bežnému používateľovi sa vždy vyberie konkrétna firma (nikdy nezostane na implicitnom „všetky"); výber je role-aware a počká na načítanie auth.
+- **`/api/auth/me`, `AuthContext`, `/api/admin/users`** — doplnené pole `complexOverview`.
+
 ---
 
 ## [2026-06-21] — Preloader, SignalBars, kontrast grafov

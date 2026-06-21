@@ -14,6 +14,7 @@ export interface AuthUser {
   lastName: string;
   role: "admin" | "user";
   companies: string[];
+  complexOverview: boolean;
 }
 
 interface AuthContextType {

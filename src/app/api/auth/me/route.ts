@@ -16,6 +16,7 @@ export async function GET() {
       lastName: user.lastName,
       role: user.role,
       companies: user.companies,
+      complexOverview: user.complexOverview ?? false,
     });
   } catch {
     return NextResponse.json({ error: "Chyba servera." }, { status: 500 });

@@ -14,6 +14,7 @@ interface UserRow {
   role: "admin" | "user";
   status: "pending" | "active";
   companies: string[];
+  complexOverview: boolean;
   createdAt: string;
 }
 
@@ -41,6 +42,7 @@ export default function AdminUsersPage() {
   const [invLastName, setInvLastName] = useState("");
   const [invRole, setInvRole] = useState<"admin" | "user">("user");
   const [invCompanies, setInvCompanies] = useState<string[]>([]);
+  const [invComplexOverview, setInvComplexOverview] = useState(false);
   const [invSubmitting, setInvSubmitting] = useState(false);
   const [invError, setInvError] = useState("");
   const [invSuccess, setInvSuccess] = useState("");
@@ -51,6 +53,7 @@ export default function AdminUsersPage() {
   const [editLastName, setEditLastName] = useState("");
   const [editCompanies, setEditCompanies] = useState<string[]>([]);
   const [editRole, setEditRole] = useState<"admin" | "user">("user");
+  const [editComplexOverview, setEditComplexOverview] = useState(false);
   const [editSubmitting, setEditSubmitting] = useState(false);
   const [editCompanyDropdownOpen, setEditCompanyDropdownOpen] = useState(false);
   const [editRoleDropdownOpen, setEditRoleDropdownOpen] = useState(false);
@@ -100,6 +103,7 @@ export default function AdminUsersPage() {
           lastName: invLastName,
           role: invRole,
           companies: invRole === "admin" ? [] : invCompanies,
+          complexOverview: invRole === "admin" ? true : invComplexOverview,
         }),
       });
       const data = await res.json();
@@ -112,6 +116,7 @@ export default function AdminUsersPage() {
         setInvLastName("");
         setInvRole("user");
         setInvCompanies([]);
+        setInvComplexOverview(false);
         loadUsers();
       }
     } catch {
@@ -158,6 +163,7 @@ export default function AdminUsersPage() {
     setEditLastName(u.lastName);
     setEditCompanies(u.companies);
     setEditRole(u.role);
+    setEditComplexOverview(u.complexOverview ?? false);
     setEditCompanyDropdownOpen(false);
   }
 
@@ -173,6 +179,7 @@ export default function AdminUsersPage() {
         lastName: editLastName.trim(),
         role: editRole,
         companies: editRole === "admin" ? [] : editCompanies,
+        complexOverview: editRole === "admin" ? true : editComplexOverview,
       }),
     });
     if (res.ok) {
@@ -330,6 +337,22 @@ export default function AdminUsersPage() {
                   )}
                 </div>
               </div>
+            )}
+            {invRole === "user" && (
+              <label className="flex items-start gap-2.5 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={invComplexOverview}
+                  onChange={(e) => setInvComplexOverview(e.target.checked)}
+                  className="mt-0.5 w-4 h-4 accent-orange-500 cursor-pointer"
+                />
+                <span>
+                  <span className="block text-sm font-medium text-gray-700">Komplexný prehľad</span>
+                  <span className="block text-xs text-gray-500">
+                    Sprístupní analytický prehľad za všetky spoločnosti.
+                  </span>
+                </span>
+              </label>
             )}
             {invError && (
               <p className="text-sm text-red-600 flex items-center gap-1">
@@ -570,6 +593,22 @@ export default function AdminUsersPage() {
                     )}
                   </div>
                 </div>
+              )}
+              {editRole === "user" && (
+                <label className="flex items-start gap-2.5 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={editComplexOverview}
+                    onChange={(e) => setEditComplexOverview(e.target.checked)}
+                    className="mt-0.5 w-4 h-4 accent-orange-500 cursor-pointer"
+                  />
+                  <span>
+                    <span className="block text-sm font-medium text-gray-700">Komplexný prehľad</span>
+                    <span className="block text-xs text-gray-500">
+                      Sprístupní analytický prehľad za všetky spoločnosti.
+                    </span>
+                  </span>
+                </label>
               )}
               <div className="flex gap-2 justify-end pt-2">
                 <button

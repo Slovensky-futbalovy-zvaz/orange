@@ -16,13 +16,19 @@ export async function PATCH(
 
     await connectDB();
 
-    const { role, companies, firstName, lastName } = await req.json();
+    const { role, companies, firstName, lastName, complexOverview } = await req.json();
     const update: Record<string, unknown> = {};
 
     if (role) update.role = role;
     if (companies !== undefined) update.companies = companies;
     if (firstName) update.firstName = firstName.trim();
     if (lastName) update.lastName = lastName.trim();
+    // Admin má Komplexný prehľad vždy; inak podľa príznaku, ak bol poslaný
+    if (role === "admin") {
+      update.complexOverview = true;
+    } else if (complexOverview !== undefined) {
+      update.complexOverview = Boolean(complexOverview);
+    }
 
     const user = await User.findByIdAndUpdate(
       params.id,

@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
 
     await connectDB();
 
-    const { email, firstName, lastName, role, companies } = await req.json();
+    const { email, firstName, lastName, role, companies, complexOverview } = await req.json();
     if (!email || !firstName || !lastName || !role) {
       return NextResponse.json(
         { error: "Vyplňte všetky povinné polia." },
@@ -60,6 +60,8 @@ export async function POST(req: NextRequest) {
       role,
       status: "pending",
       companies: role === "admin" ? [] : (companies || []),
+      // Admin má Komplexný prehľad vždy; pre bežného používateľa podľa príznaku
+      complexOverview: role === "admin" ? true : Boolean(complexOverview),
       magicToken: token,
       magicTokenExpiry: expiry,
     });
