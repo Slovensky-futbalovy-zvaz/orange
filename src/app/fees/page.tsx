@@ -10,7 +10,7 @@ import { Building2, Euro, ArrowRight } from "lucide-react";
 import { useCompany } from "@/contexts/CompanyContext";
 import { usePeriod } from "@/contexts/PeriodContext";
 import { useTheme, THEMES } from "@/contexts/ThemeContext";
-import { formatEur } from "@/lib/format";
+import { formatEur, formatInt } from "@/lib/format";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -189,7 +189,7 @@ export default function SpolocnostPage() {
                 <BarChart data={barData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--line)" />
                   <XAxis dataKey="mesiac" tick={{ fontSize: 12, fill: "var(--muted)" }} />
-                  <YAxis tick={{ fontSize: 12, fill: "var(--muted)" }} unit=" €" />
+                  <YAxis tick={{ fontSize: 12, fill: "var(--muted)" }} unit=" €" tickFormatter={(v) => formatInt(v)} />
                   <Tooltip
                     formatter={(v: number) => formatEur(v)}
                     contentStyle={{

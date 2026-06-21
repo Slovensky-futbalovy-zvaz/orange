@@ -10,7 +10,7 @@ import { SignalBars } from "@/components/SignalBars";
 import { useCompany } from "@/contexts/CompanyContext";
 import { usePeriod } from "@/contexts/PeriodContext";
 import { useTheme, THEMES } from "@/contexts/ThemeContext";
-import { formatEur } from "@/lib/format";
+import { formatEur, formatInt } from "@/lib/format";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -166,7 +166,7 @@ export default function AnalyzyPage() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <KpiCard
             title="Čísiel celkom"
-            value={kpiStats.pocetCisel}
+            value={formatInt(kpiStats.pocetCisel)}
             icon={<Phone size={16} />}
             variant="accent"
             subtitle={kpiSubtitle}
@@ -180,7 +180,7 @@ export default function AnalyzyPage() {
           />
           <KpiCard
             title="Nadlimitov"
-            value={kpiStats.pocetNadlimitov}
+            value={formatInt(kpiStats.pocetNadlimitov)}
             icon={<AlertTriangle size={16} />}
             variant="danger"
             subtitle="zamestnancov"
@@ -209,7 +209,7 @@ export default function AnalyzyPage() {
                 <BarChart data={stackedData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--line)" />
                   <XAxis dataKey="mesiac" tick={{ fontSize: 12, fill: "var(--muted)" }} />
-                  <YAxis tick={{ fontSize: 12, fill: "var(--muted)" }} unit=" €" />
+                  <YAxis tick={{ fontSize: 12, fill: "var(--muted)" }} unit=" €" tickFormatter={(v) => formatInt(v)} />
                   <Tooltip
                     formatter={(v: number) => formatEur(v)}
                     contentStyle={{
@@ -237,7 +237,7 @@ export default function AnalyzyPage() {
                 <LineChart data={trendData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--line)" />
                   <XAxis dataKey="mesiac" tick={{ fontSize: 12, fill: "var(--muted)" }} />
-                  <YAxis tick={{ fontSize: 12, fill: "var(--muted)" }} unit=" €" />
+                  <YAxis tick={{ fontSize: 12, fill: "var(--muted)" }} unit=" €" tickFormatter={(v) => formatInt(v)} />
                   <Tooltip
                     formatter={(v: number) => formatEur(v)}
                     contentStyle={{
@@ -272,7 +272,7 @@ export default function AnalyzyPage() {
                     layout="vertical"
                     margin={{ left: 0, right: 16, top: 4, bottom: 4 }}
                   >
-                    <XAxis type="number" tick={{ fontSize: 11, fill: "var(--muted)" }} unit=" €" />
+                    <XAxis type="number" tick={{ fontSize: 11, fill: "var(--muted)" }} unit=" €" tickFormatter={(v) => formatInt(v)} />
                     <YAxis
                       type="category"
                       dataKey="stredisko"

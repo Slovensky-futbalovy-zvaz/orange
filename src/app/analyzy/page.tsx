@@ -9,7 +9,7 @@ import { Phone, Euro, AlertTriangle, TrendingUp } from "lucide-react";
 import { SignalBars } from "@/components/SignalBars";
 import { CustomSelect } from "@/components/CustomSelect";
 import { useCompany } from "@/contexts/CompanyContext";
-import { formatEur } from "@/lib/format";
+import { formatEur, formatInt } from "@/lib/format";
 
 const MONTH_NAMES = [
   "", "Jan", "Feb", "Mar", "Apr", "Máj", "Jún",
@@ -240,7 +240,7 @@ export default function AnalyzyPage() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <KpiCard
             title="Čísiel celkom"
-            value={kpiStats.pocetCisel}
+            value={formatInt(kpiStats.pocetCisel)}
             icon={<Phone size={18} />}
             color="blue"
             subtitle={kpiSubtitle}
@@ -254,7 +254,7 @@ export default function AnalyzyPage() {
           />
           <KpiCard
             title="Nadlimitov"
-            value={kpiStats.pocetNadlimitov}
+            value={formatInt(kpiStats.pocetNadlimitov)}
             icon={<AlertTriangle size={18} />}
             color="red"
             subtitle="zamestnancov"
@@ -284,7 +284,7 @@ export default function AnalyzyPage() {
                 <BarChart data={stackedData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                   <XAxis dataKey="mesiac" tick={{ fontSize: 12 }} />
-                  <YAxis tick={{ fontSize: 12 }} unit=" €" />
+                  <YAxis tick={{ fontSize: 12 }} unit=" €" tickFormatter={(v) => formatInt(v)} />
                   <Tooltip formatter={(v: number) => formatEur(v)} />
                   <Legend />
                   <Bar dataKey="Zamestnanci (€)" stackId="a" fill="#6366f1" radius={[0, 0, 0, 0]} />
@@ -305,7 +305,7 @@ export default function AnalyzyPage() {
                 <LineChart data={trendData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                   <XAxis dataKey="mesiac" tick={{ fontSize: 12 }} />
-                  <YAxis tick={{ fontSize: 12 }} unit=" €" />
+                  <YAxis tick={{ fontSize: 12 }} unit=" €" tickFormatter={(v) => formatInt(v)} />
                   <Tooltip formatter={(v: number) => formatEur(v)} />
                   <Legend />
                   <Line type="monotone" dataKey="Náklady (€)" stroke="#6366f1" strokeWidth={2} dot />
@@ -325,7 +325,7 @@ export default function AnalyzyPage() {
               ) : (
                 <ResponsiveContainer width="100%" height={220}>
                   <BarChart data={data.byStredisko} layout="vertical">
-                    <XAxis type="number" tick={{ fontSize: 11 }} unit=" €" />
+                    <XAxis type="number" tick={{ fontSize: 11 }} unit=" €" tickFormatter={(v) => formatInt(v)} />
                     <YAxis type="category" dataKey="stredisko" tick={{ fontSize: 11 }} width={60} />
                     <Tooltip formatter={(v: number) => formatEur(v)} />
                     <Bar dataKey="celkovaCena" fill="#6366f1" radius={[0, 4, 4, 0]} name="Celkom (€)" />

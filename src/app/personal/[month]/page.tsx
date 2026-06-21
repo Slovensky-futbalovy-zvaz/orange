@@ -5,7 +5,7 @@ import { CustomSelect } from "@/components/CustomSelect";
 import { SelectField } from "@/components/SelectField";
 import { useCompany } from "@/contexts/CompanyContext";
 import { useCodebook } from "@/hooks/useCodebook";
-import { formatEur } from "@/lib/format";
+import { formatEur, formatInt } from "@/lib/format";
 import { SignalBars } from "@/components/SignalBars";
 
 interface InvoiceDetail {
@@ -335,9 +335,9 @@ export default function ReportPage({ params }: { params: { month: string } }) {
           <h1 className="text-2xl font-bold text-gray-900">Prehľad osobných profilov</h1>
           {summary && (
             <p className="text-gray-500 text-sm mt-1">
-              {summary.pocetCisel} čísel · {summary.celkovaNaklady != null ? formatEur(summary.celkovaNaklady) : "—"} celkom ·{" "}
+              {formatInt(summary.pocetCisel)} čísel · {summary.celkovaNaklady != null ? formatEur(summary.celkovaNaklady) : "—"} celkom ·{" "}
               <span className="text-red-600 font-medium">
-                {summary.pocetNadlimitov} nadlimitov ({summary.sumaNadlimitov != null ? formatEur(summary.sumaNadlimitov) : "—"})
+                {formatInt(summary.pocetNadlimitov)} nadlimitov ({summary.sumaNadlimitov != null ? formatEur(summary.sumaNadlimitov) : "—"})
               </span>
             </p>
           )}

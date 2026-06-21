@@ -10,7 +10,7 @@ import {
 import { Building2, Euro, ArrowRight } from "lucide-react";
 import { useCompany } from "@/contexts/CompanyContext";
 import { CustomSelect } from "@/components/CustomSelect";
-import { formatEur } from "@/lib/format";
+import { formatEur, formatInt } from "@/lib/format";
 
 const MONTH_NAMES = [
   "", "Jan", "Feb", "Mar", "Apr", "Máj", "Jún",
@@ -240,7 +240,7 @@ export default function SpolocnostPage() {
                 <BarChart data={barData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                   <XAxis dataKey="mesiac" tick={{ fontSize: 12 }} />
-                  <YAxis tick={{ fontSize: 12 }} unit=" €" />
+                  <YAxis tick={{ fontSize: 12 }} unit=" €" tickFormatter={(v) => formatInt(v)} />
                   <Tooltip formatter={(v: number) => formatEur(v)} />
                   <Bar dataKey="Poplatky (€)" fill="#6366f1" radius={[4, 4, 0, 0]} />
                 </BarChart>

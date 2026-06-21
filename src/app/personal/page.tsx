@@ -10,7 +10,7 @@ import { SelectField } from "@/components/SelectField";
 import { useCompany } from "@/contexts/CompanyContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCodebook } from "@/hooks/useCodebook";
-import { formatEur } from "@/lib/format";
+import { formatEur, formatInt } from "@/lib/format";
 
 // ─── Interfaces ────────────────────────────────────────────────────────────
 
@@ -446,10 +446,10 @@ export default function OverTheLimitPage() {
         <div className="w-full sm:w-auto sm:ml-auto flex flex-wrap items-center gap-2">
           {summary && !loading && (
             <span className="text-xs" style={{ color: "var(--faint)" }}>
-              {summary.pocetCisel} čísel · {summary.celkovaNaklady != null ? formatEur(summary.celkovaNaklady) : "—"}
+              {formatInt(summary.pocetCisel)} čísel · {summary.celkovaNaklady != null ? formatEur(summary.celkovaNaklady) : "—"}
               {summary.pocetNadlimitov > 0 && (
                 <span className="font-medium ml-1" style={{ color: "var(--danger)" }}>
-                  · {summary.pocetNadlimitov} nadlimitov ({summary.sumaNadlimitov != null ? formatEur(summary.sumaNadlimitov) : "—"})
+                  · {formatInt(summary.pocetNadlimitov)} nadlimitov ({summary.sumaNadlimitov != null ? formatEur(summary.sumaNadlimitov) : "—"})
                 </span>
               )}
             </span>
