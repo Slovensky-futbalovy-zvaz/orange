@@ -31,6 +31,7 @@ Formát je inšpirovaný [Keep a Changelog](https://keepachangelog.com/en/1.0.0/
 
 ### Opravené
 
+- **Testy a Node verzia** — aktualizované zastarané testy `setup.test.ts` a `verify.test.ts` (podľa zakázaného manuálneho setupu a nového POST verify flowu); `npm run test:run` je opäť zelený (30/30). Pridané `engines` (Node ≥18.18) v `package.json` a `.nvmrc` (Node 20).
 - **Správa používateľov — orezaný stĺpec akcií** — rozšírený layout stránky (`max-w-6xl`), pridaná hlavička „Akcie", zabránené zalamovaniu; ikony (znovu odoslať / upraviť / zmazať) sú vždy viditeľné. Ikona úpravy zmenená na ceruzku.
 - **„Čísiel celkom" = unikátny počet telefónnych čísel** — KPI sa predtým počítalo ako súčet po mesiacoch, takže za viacmesačné obdobie to isté číslo počítalo viackrát (napr. ~5× za 5 mesiacov). Teraz sa počíta `distinct` telefónnych čísel za obdobie — v Prehľade aj v Komplexnom prehľade (vrátane stĺpca „Čísiel" po spoločnostiach).
 - **Magic-link „odkaz vypršal" hneď po doručení** — poštové skenery (napr. Microsoft Safe Links) prednačítavali odkaz cez GET a tým spotrebovali jednorazový token ešte pred kliknutím používateľa. E-mailový odkaz teraz vedie na potvrdzovaciu stránku `/auth/verify`, kde sa token spotrebuje až po kliknutí na „Prihlásiť sa" (POST). GET na `/api/auth/verify` už token nezneplatňuje, len presmeruje (spätná kompatibilita pre staré odkazy). Odstránený duplicitný Mongoose index na `Person.serviceIdentification`.

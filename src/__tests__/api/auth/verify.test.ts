@@ -10,32 +10,56 @@ vi.mock("@/models/User", () => ({
   default: { findOne: mockFindOne },
 }));
 
-import { GET } from "@/app/api/auth/verify/route";
+import { GET, POST } from "@/app/api/auth/verify/route";
 import { AUTH_COOKIE } from "@/lib/auth";
 
 beforeEach(() => {
   vi.clearAllMocks();
 });
 
+const makePostReq = (body: object) =>
+  new NextRequest("http://localhost:3000/api/auth/verify", {
+    method: "POST",
+    body: JSON.stringify(body),
+    headers: { "Content-Type": "application/json" },
+  });
+
+// GET token NEKONZUMUJE — len presmeruje na potvrdzovaciu stránku
+// (chráni magic link pred poštovými skenermi, ktoré robia GET prefetch).
 describe("GET /api/auth/verify", () => {
-  it("redirects to /login?error=invalid when token param is missing", async () => {
+  it("redirects to the confirmation page and does NOT consume the token", async () => {
+    const req = new NextRequest("http://localhost:3000/api/auth/verify?token=abc");
+    const res = await GET(req);
+    expect(res.status).toBe(307);
+    expect(res.headers.get("location")).toContain("/auth/verify?token=abc");
+    expect(mockFindOne).not.toHaveBeenCalled();
+  });
+
+  it("redirects to /auth/verify even without a token", async () => {
     const req = new NextRequest("http://localhost:3000/api/auth/verify");
     const res = await GET(req);
     expect(res.status).toBe(307);
-    expect(res.headers.get("location")).toContain("/login?error=invalid");
+    expect(res.headers.get("location")).toContain("/auth/verify");
+    expect(mockFindOne).not.toHaveBeenCalled();
+  });
+});
+
+// POST token KONZUMUJE — overí, aktivuje konto a nastaví session cookie.
+describe("POST /api/auth/verify", () => {
+  it("returns 400 when token is missing", async () => {
+    const res = await POST(makePostReq({}));
+    expect(res.status).toBe(400);
   });
 
-  it("redirects to /login?error=expired when token not found in DB", async () => {
+  it("returns 400 (expired) when token not found in DB", async () => {
     mockFindOne.mockResolvedValue(null);
-    const req = new NextRequest(
-      "http://localhost:3000/api/auth/verify?token=nonexistent"
-    );
-    const res = await GET(req);
-    expect(res.status).toBe(307);
-    expect(res.headers.get("location")).toContain("/login?error=expired");
+    const res = await POST(makePostReq({ token: "nonexistent" }));
+    expect(res.status).toBe(400);
+    const data = await res.json();
+    expect(data.error).toBe("expired");
   });
 
-  it("activates user, sets JWT cookie and redirects to / on valid token", async () => {
+  it("activates user, sets JWT cookie and returns ok on valid token", async () => {
     const mockUser = {
       _id: { toString: () => "507f1f77bcf86cd799439011" },
       email: "user@test.sk",
@@ -47,13 +71,11 @@ describe("GET /api/auth/verify", () => {
     };
     mockFindOne.mockResolvedValue(mockUser);
 
-    const req = new NextRequest(
-      "http://localhost:3000/api/auth/verify?token=validtoken123"
-    );
-    const res = await GET(req);
+    const res = await POST(makePostReq({ token: "validtoken123" }));
+    const data = await res.json();
 
-    expect(res.status).toBe(307);
-    expect(res.headers.get("location")).toBe("http://localhost:3000/");
+    expect(res.status).toBe(200);
+    expect(data.ok).toBe(true);
     const setCookie = res.headers.get("set-cookie") ?? "";
     expect(setCookie).toContain(`${AUTH_COOKIE}=`);
     expect(setCookie).toContain("HttpOnly");
@@ -65,10 +87,7 @@ describe("GET /api/auth/verify", () => {
 
   it("queries DB with expiry check ($gt on magicTokenExpiry)", async () => {
     mockFindOne.mockResolvedValue(null);
-    const req = new NextRequest(
-      "http://localhost:3000/api/auth/verify?token=anytoken"
-    );
-    await GET(req);
+    await POST(makePostReq({ token: "anytoken" }));
     expect(mockFindOne).toHaveBeenCalledWith({
       magicToken: "anytoken",
       magicTokenExpiry: { $gt: expect.any(Date) },

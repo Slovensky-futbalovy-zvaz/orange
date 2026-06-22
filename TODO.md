@@ -4,9 +4,7 @@ Zoznam plánovaných vylepšení a známych obmedzení. História hotových zmie
 
 ## Známe obmedzenia
 
-- **Testy `setup.test.ts`** — 5 testov je momentálne nefunkčných (zastaraná signatúra voči `/api/auth/setup`). Netýka sa behu aplikácie, ale `npm run test:run` skončí červené. Treba aktualizovať testy podľa aktuálnej implementácie setup routy.
 - **`package-lock.json` nie je verzovaný** — zámerné rozhodnutie (neplatný semver z optional platform bindings láme `npm install` na Verceli). Dôsledok: build nie je bit-to-bit reprodukovateľný. Zvážiť `npm-shrinkwrap` alebo pinovanie verzií.
-- **Node verzia nie je pripnutá** — chýba `engines` pole v `package.json` / `.nvmrc`. Odporúčané Node 20 LTS.
 
 ## Nápady na ďalší vývoj
 
