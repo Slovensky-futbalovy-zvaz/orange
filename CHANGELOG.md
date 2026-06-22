@@ -31,6 +31,7 @@ Formát je inšpirovaný [Keep a Changelog](https://keepachangelog.com/en/1.0.0/
 
 ### Opravené
 
+- **`package-lock.json` je opäť verzovaný** — pôvodný lockfile mal poškodený vnorený záznam `@unrs/resolver-binding-openharmony-arm64` (chýbajúca verzia, transitívne cez `eslint-import-resolver-typescript`), kvôli čomu `npm ci` padal na „Invalid Version" a lockfile sa preto ignoroval. Lockfile bol pregenerovaný od nuly (čistý, `npm ci` prechádza) a odstránený zo `.gitignore` → reprodukovateľné inštalácie.
 - **Testy a Node verzia** — aktualizované zastarané testy `setup.test.ts` a `verify.test.ts` (podľa zakázaného manuálneho setupu a nového POST verify flowu); `npm run test:run` je opäť zelený (30/30). Pridané `engines` (Node ≥18.18) v `package.json` a `.nvmrc` (Node 20).
 - **Správa používateľov — orezaný stĺpec akcií** — rozšírený layout stránky (`max-w-6xl`), pridaná hlavička „Akcie", zabránené zalamovaniu; ikony (znovu odoslať / upraviť / zmazať) sú vždy viditeľné. Ikona úpravy zmenená na ceruzku.
 - **„Čísiel celkom" = unikátny počet telefónnych čísel** — KPI sa predtým počítalo ako súčet po mesiacoch, takže za viacmesačné obdobie to isté číslo počítalo viackrát (napr. ~5× za 5 mesiacov). Teraz sa počíta `distinct` telefónnych čísel za obdobie — v Prehľade aj v Komplexnom prehľade (vrátane stĺpca „Čísiel" po spoločnostiach).

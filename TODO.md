@@ -4,7 +4,7 @@ Zoznam plánovaných vylepšení a známych obmedzení. História hotových zmie
 
 ## Známe obmedzenia
 
-- **`package-lock.json` nie je verzovaný** — zámerné rozhodnutie (neplatný semver z optional platform bindings láme `npm install` na Verceli). Dôsledok: build nie je bit-to-bit reprodukovateľný. Zvážiť `npm-shrinkwrap` alebo pinovanie verzií.
+_Žiadne aktuálne kritické. (`package-lock.json` je teraz verzovaný a `npm ci` funguje.)_
 
 ## Nápady na ďalší vývoj
 
