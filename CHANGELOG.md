@@ -28,6 +28,10 @@ Formát je inšpirovaný [Keep a Changelog](https://keepachangelog.com/en/1.0.0/
 - Nepoužívané legacy stránky so slovenskými routami (neboli v menu, duplikovali anglické ekvivalenty): `/analyzy` (≈ `/overview`), `/spolocnost` + `/spolocnost/[month]`, `/osoby` (≈ `/people`), `/report` + `/report/[month]` (≈ `/personal`).
 - Stray súbor `jose-6.2.3.tgz` z roota repozitára (balík sa ťahá z npm registry).
 
+### Opravené
+
+- **Magic-link „odkaz vypršal" hneď po doručení** — poštové skenery (napr. Microsoft Safe Links) prednačítavali odkaz cez GET a tým spotrebovali jednorazový token ešte pred kliknutím používateľa. E-mailový odkaz teraz vedie na potvrdzovaciu stránku `/auth/verify`, kde sa token spotrebuje až po kliknutí na „Prihlásiť sa" (POST). GET na `/api/auth/verify` už token nezneplatňuje, len presmeruje (spätná kompatibilita pre staré odkazy). Odstránený duplicitný Mongoose index na `Person.serviceIdentification`.
+
 ---
 
 ## [2026-06-21] — Preloader, SignalBars, kontrast grafov

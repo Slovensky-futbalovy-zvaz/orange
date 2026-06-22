@@ -43,7 +43,7 @@ export async function sendMagicLink(
   firstName: string,
   token: string
 ) {
-  const link = `${APP_URL}/api/auth/verify?token=${token}`;
+  const link = `${APP_URL}/auth/verify?token=${token}`;
   const html = `
     <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px; background: #fff;">
       <div style="display:flex; align-items:center; gap:8px; margin-bottom:24px;">
@@ -75,7 +75,7 @@ export async function sendAdminActivation(
   firstName: string,
   token: string
 ) {
-  const link = `${APP_URL}/api/auth/verify?token=${token}`;
+  const link = `${APP_URL}/auth/verify?token=${token}`;
   const html = `
     <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px; background: #fff;">
       <div style="display:flex; align-items:center; gap:8px; margin-bottom:24px;">
@@ -114,7 +114,7 @@ export async function sendInvitation(
   inviterName: string,
   companies: string[]
 ) {
-  const link = `${APP_URL}/api/auth/verify?token=${token}`;
+  const link = `${APP_URL}/auth/verify?token=${token}`;
   const companiesText =
     companies.length > 0
       ? `Budete mať prístup k spoločnostiam: <strong>${companies.join(", ")}</strong>.`

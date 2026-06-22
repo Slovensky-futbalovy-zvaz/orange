@@ -5,14 +5,26 @@ import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 import { signJWT, AUTH_COOKIE } from "@/lib/auth";
 
-/** Overí magic token, nastaví session cookie a presmeruje na domovskú stránku */
+/**
+ * GET — len presmeruje na potvrdzovaciu stránku, token NESPOTREBUJE.
+ * Dôvod: poštové skenery (napr. Microsoft Safe Links) automaticky prednačítajú
+ * odkazy v e-maile cez GET. Keby sme token spotrebovali tu, skener by ho
+ * zneplatnil ešte pred kliknutím používateľa. Skutočné overenie robí až POST,
+ * ktorý vyvolá používateľ kliknutím na tlačidlo.
+ */
 export async function GET(req: NextRequest) {
+  const token = req.nextUrl.searchParams.get("token") ?? "";
+  const url = new URL("/auth/verify", req.url);
+  if (token) url.searchParams.set("token", token);
+  return NextResponse.redirect(url);
+}
+
+/** POST — overí magic token, aktivuje konto, nastaví session cookie. */
+export async function POST(req: NextRequest) {
   try {
-    const token = req.nextUrl.searchParams.get("token");
+    const { token } = await req.json().catch(() => ({ token: "" }));
     if (!token) {
-      return NextResponse.redirect(
-        new URL("/login?error=invalid", req.url)
-      );
+      return NextResponse.json({ error: "invalid" }, { status: 400 });
     }
 
     await connectDB();
@@ -23,12 +35,10 @@ export async function GET(req: NextRequest) {
     });
 
     if (!user) {
-      return NextResponse.redirect(
-        new URL("/login?error=expired", req.url)
-      );
+      return NextResponse.json({ error: "expired" }, { status: 400 });
     }
 
-    // Aktivuje konto (pre nových používateľov)
+    // Aktivuje konto (pre nových používateľov) a token zneplatní (jednorazový)
     user.status = "active";
     user.magicToken = null;
     user.magicTokenExpiry = null;
@@ -40,7 +50,7 @@ export async function GET(req: NextRequest) {
       email: user.email,
     });
 
-    const response = NextResponse.redirect(new URL("/", req.url));
+    const response = NextResponse.json({ ok: true });
     response.cookies.set(AUTH_COOKIE, jwt, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -52,6 +62,6 @@ export async function GET(req: NextRequest) {
     return response;
   } catch (err) {
     console.error("Verify error:", err);
-    return NextResponse.redirect(new URL("/login?error=server", req.url));
+    return NextResponse.json({ error: "server" }, { status: 500 });
   }
 }

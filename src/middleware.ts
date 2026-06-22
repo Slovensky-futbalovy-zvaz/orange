@@ -8,6 +8,7 @@ const AUTH_COOKIE = "ov_auth";
 // Cesty prístupné bez prihlásenia (prefix match)
 const PUBLIC_PREFIXES = [
   "/login",
+  "/auth/verify",
   "/api/auth/setup",
   "/api/auth/login",
   "/api/auth/verify",
