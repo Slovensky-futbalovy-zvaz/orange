@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import {
   UserPlus, Trash2, Mail, Shield, User as UserIcon,
   Loader2, CheckCircle, AlertCircle, Building2, X, RefreshCw,
-  ChevronDown, Check, LayoutDashboard,
+  ChevronDown, Check, LayoutDashboard, Send,
 } from "lucide-react";
 
 interface UserRow {
@@ -34,6 +34,7 @@ export default function AdminUsersPage() {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [resendingId, setResendingId] = useState<string | null>(null);
 
   // Invite formulár
   const [showInvite, setShowInvite] = useState(false);
@@ -134,6 +135,23 @@ export default function AdminUsersPage() {
     } else {
       const data = await res.json();
       alert(data.error || "Chyba pri mazaní.");
+    }
+  }
+
+  async function handleResend(id: string, email: string) {
+    setResendingId(id);
+    try {
+      const res = await fetch(`/api/admin/users/${id}/resend`, { method: "POST" });
+      if (res.ok) {
+        alert(`Žiadosť o aktiváciu bola znovu odoslaná na ${email}.`);
+      } else {
+        const data = await res.json().catch(() => ({}));
+        alert(data.error || "Nepodarilo sa odoslať žiadosť o aktiváciu.");
+      }
+    } catch {
+      alert("Nepodarilo sa odoslať žiadosť o aktiváciu.");
+    } finally {
+      setResendingId(null);
     }
   }
 
@@ -467,6 +485,20 @@ export default function AdminUsersPage() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1 justify-end">
+                      {u.status === "pending" && (
+                        <button
+                          onClick={() => handleResend(u._id, u.email)}
+                          disabled={resendingId === u._id}
+                          className="p-1.5 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors disabled:opacity-50"
+                          title="Znovu odoslať žiadosť o aktiváciu"
+                        >
+                          {resendingId === u._id ? (
+                            <Loader2 size={14} className="animate-spin" />
+                          ) : (
+                            <Send size={14} />
+                          )}
+                        </button>
+                      )}
                       <button
                         onClick={() => openEdit(u)}
                         className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"

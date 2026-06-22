@@ -14,6 +14,7 @@ Formát je inšpirovaný [Keep a Changelog](https://keepachangelog.com/en/1.0.0/
 - **`src/app/api/complex-overview/route.ts`** — agregačné API cez všetky spoločnosti (rok + rozsah mesiacov); prístup len pre Správcu alebo používateľa s príznakom `complexOverview`.
 - **Príznak `complexOverview` na používateľovi** (`src/models/User.ts`) — riadi prístup ku Komplexnému prehľadu; Správca ho má vždy. Nastaviteľný cez checkbox v správe používateľov (pozvánka aj editácia).
 - **`src/components/PeriodPicker.tsx`** — nový popover vyberač obdobia v hlavičke: navigácia rokov (len roky s dátami), výber rozsahu mesiacov (1. klik začiatok, 2. klik koniec), „Aktuálny mesiac" a „Hotovo" (zmena sa aplikuje až po potvrdení).
+- **Znovu odoslať žiadosť o aktiváciu** — v správe používateľov pribudla ikona (pri čakajúcich účtoch) na opätovné odoslanie pozvánky s novým tokenom (`POST /api/admin/users/[id]/resend`).
 
 ### Zmenené
 
