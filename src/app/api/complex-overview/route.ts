@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import MonthlyImport from "@/models/MonthlyImport";
+import Invoice from "@/models/Invoice";
 import Company from "@/models/Company";
 import { getCurrentUser } from "@/lib/auth";
 
@@ -84,9 +85,23 @@ export async function GET(req: NextRequest) {
     pocetNadlimitov: m.pocetNadlimitov ?? 0,
   }));
 
+  // „Čísiel" = počet UNIKÁTNYCH telefónnych čísel za obdobie (nie súčet po
+  // mesiacoch). Celkovo aj po spoločnostiach počítame distinct serviceIdentification.
+  const uniqueNumbersTotal = await Invoice.distinct("serviceIdentification", periodMatch);
+
+  const uniqueByCompanyRaw = await Invoice.aggregate([
+    { $match: periodMatch },
+    { $group: { _id: "$cn", nums: { $addToSet: "$serviceIdentification" } } },
+    { $project: { _id: 1, pocetCisel: { $size: "$nums" } } },
+  ]);
+  const uniqueByCompany = new Map<string, number>();
+  for (const r of uniqueByCompanyRaw) {
+    uniqueByCompany.set(r._id as string, r.pocetCisel as number);
+  }
+
   // --- Period totals ---
   const periodStats = {
-    pocetCisel: monthlyTrendRaw.reduce((s, m) => s + (m.pocetCisel ?? 0), 0),
+    pocetCisel: uniqueNumbersTotal.length,
     celkovaNaklady: round2(monthlyTrendRaw.reduce((s, m) => s + (m.celkovaNaklady ?? 0), 0)),
     pocetNadlimitov: monthlyTrendRaw.reduce((s, m) => s + (m.pocetNadlimitov ?? 0), 0),
     sumaNadlimitov: round2(monthlyTrendRaw.reduce((s, m) => s + (m.sumaNadlimitov ?? 0), 0)),
@@ -99,7 +114,6 @@ export async function GET(req: NextRequest) {
       $group: {
         _id: "$cn",
         celkovaNaklady: { $sum: "$celkovaNaklady" },
-        pocetCisel: { $sum: "$pocetCisel" },
         pocetNadlimitov: { $sum: "$pocetNadlimitov" },
         sumaNadlimitov: { $sum: "$sumaNadlimitov" },
       },
@@ -113,7 +127,7 @@ export async function GET(req: NextRequest) {
     cn: c._id as string,
     companyName: labelFor(c._id as string),
     celkovaNaklady: round2(c.celkovaNaklady),
-    pocetCisel: c.pocetCisel ?? 0,
+    pocetCisel: uniqueByCompany.get(c._id as string) ?? 0,
     pocetNadlimitov: c.pocetNadlimitov ?? 0,
     sumaNadlimitov: round2(c.sumaNadlimitov),
     podiel: totalCost > 0 ? Math.round((c.celkovaNaklady / totalCost) * 1000) / 10 : 0,

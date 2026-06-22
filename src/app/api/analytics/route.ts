@@ -76,8 +76,16 @@ export async function GET(req: NextRequest) {
   } | null = null;
 
   if (year) {
+    // „Čísiel celkom" = počet UNIKÁTNYCH telefónnych čísel za obdobie
+    // (nie súčet po mesiacoch — to by to isté číslo počítalo viackrát).
+    const months = buildMonthRange(monthFrom, monthTo);
+    const uniqueNumbers = await Invoice.distinct("serviceIdentification", {
+      ...matchCn,
+      invoiceYear: year,
+      invoiceMonth: { $in: months },
+    });
     periodStats = {
-      pocetCisel: monthlyTrendRaw.reduce((s, m) => s + (m.pocetCisel ?? 0), 0),
+      pocetCisel: uniqueNumbers.length,
       celkovaNaklady: Math.round(monthlyTrendRaw.reduce((s, m) => s + (m.celkovaNaklady ?? 0), 0) * 100) / 100,
       pocetNadlimitov: monthlyTrendRaw.reduce((s, m) => s + (m.pocetNadlimitov ?? 0), 0),
       sumaNadlimitov: Math.round(monthlyTrendRaw.reduce((s, m) => s + (m.sumaNadlimitov ?? 0), 0) * 100) / 100,
