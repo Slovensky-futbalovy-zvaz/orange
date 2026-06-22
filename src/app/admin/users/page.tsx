@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import {
   UserPlus, Trash2, Mail, Shield, User as UserIcon,
-  Loader2, CheckCircle, AlertCircle, Building2, X, RefreshCw,
+  Loader2, CheckCircle, AlertCircle, Pencil, X, RefreshCw,
   ChevronDown, Check, LayoutDashboard, Send,
 } from "lucide-react";
 
@@ -208,7 +208,7 @@ export default function AdminUsersPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-6xl mx-auto">
       <div className="flex flex-wrap items-start justify-between gap-3 mb-6">
         <div>
           <h1 className="text-xl font-semibold text-gray-900">Správa používateľov</h1>
@@ -425,8 +425,8 @@ export default function AdminUsersPage() {
                 <th className="text-left px-4 py-3">Rola</th>
                 <th className="text-left px-4 py-3">Stav</th>
                 <th className="text-left px-4 py-3">Spoločnosti</th>
-                <th className="text-left px-4 py-3">Kompl. prehľad</th>
-                <th className="px-4 py-3"></th>
+                <th className="text-left px-4 py-3 whitespace-nowrap">Kompl. prehľad</th>
+                <th className="text-right px-4 py-3 whitespace-nowrap">Akcie</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -483,7 +483,7 @@ export default function AdminUsersPage() {
                       <span className="text-gray-300 text-xs">—</span>
                     )}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 whitespace-nowrap">
                     <div className="flex items-center gap-1 justify-end">
                       {u.status === "pending" && (
                         <button
@@ -504,7 +504,7 @@ export default function AdminUsersPage() {
                         className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
                         title="Upraviť"
                       >
-                        <Building2 size={14} />
+                        <Pencil size={14} />
                       </button>
                       <button
                         onClick={() => handleDelete(u._id, `${u.firstName} ${u.lastName}`)}
