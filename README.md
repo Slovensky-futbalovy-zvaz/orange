@@ -10,8 +10,9 @@ Projekt bol vyvinutý v spolupráci so **Slovenským futbalovým zväzom (SFZ)**
 - **Databáza osôb** — správa zamestnancov s limitmi na volania
 - **Databáza spoločností** — podpora viacerých organizácií / stredísk
 - **Report pre ekonomiku** — prehľad nadlimitov s exportom do Excel (`.xlsx`)
-- **Analýzy** — mesačný trend nákladov, náklady po strediskách, opakovaní prekračovatelia
-- **Správa používateľov** — magic link prihlásenie, role správca/používateľ, pridelenie prístupu k spoločnostiam
+- **Analýzy (Prehľad)** — mesačný trend nákladov, náklady po strediskách, opakovaní prekračovatelia; výber obdobia (rok + rozsah mesiacov) cez popover kalendár v hlavičke
+- **Komplexný prehľad** — analytický pohľad na náklady za **všetky** spoločnosti naraz (mesačný trend, náklady po spoločnostiach, podiel na celku) pre vyjednávanie množstevných zliav; prístup riadený príznakom na používateľovi (správca automaticky)
+- **Správa používateľov** — magic link prihlásenie, role správca/používateľ, pridelenie prístupu k spoločnostiam, príznak „Komplexný prehľad", opätovné odoslanie žiadosti o aktiváciu
 - **Mobilná responzivita** — plná podpora mobilných zariadení: hamburger menu, slide-in sidebar, horizontálny scroll tabuliek, pie charty prispôsobené malým obrazovkám
 
 ## Stack
@@ -67,6 +68,14 @@ Téma sa prepína atribútom `data-dir` na `<html>`:
 
 ## Lokálne spustenie
 
+### Požiadavky
+
+- **Node.js 18+** (odporúčané 20 LTS) a npm
+- **MongoDB** — MongoDB Atlas (free tier stačí) alebo lokálna inštancia
+- **Ecomail.cz** účet s overenou odosielacou doménou (na magic-link emaily)
+
+> **Poznámka pre forkerov:** `package-lock.json` nie je verzovaný (zámerne — obsahuje neplatný semver z optional platform bindings, ktorý láme `npm install` na Verceli). `npm install` vytvorí čerstvý lockfile lokálne; build je tým pádom plne funkčný, len nie bit-to-bit reprodukovateľný.
+
 ### 1. Inštalácia závislostí
 
 ```bash
@@ -116,6 +125,10 @@ Otvor `http://localhost:3000` — ak `FROM_EMAIL` nie je nastavená, login strá
 Pri prvom štarte aplikácia automaticky vytvorí konto primárneho správcu s emailom nastaveným v `FROM_EMAIL`. Na login stránke zadaj túto adresu a príde ti magic link.
 
 Ďalší používatelia sa pridávajú cez **Admin → Používatelia → Pozvať**.
+
+## Roadmap a známe obmedzenia
+
+Plánované vylepšenia a známe nedostatky sú v [TODO.md](TODO.md). História zmien je v [CHANGELOG.md](CHANGELOG.md).
 
 ## Licencia
 
